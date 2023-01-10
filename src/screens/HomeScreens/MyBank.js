@@ -1,12 +1,15 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, Dimensions, Image } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, Dimensions, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 
 const { width, height } = Dimensions.get('window')
 
 const MyBank = () => {
+    const nav = useNavigation()
+
     const productData = [1, 2, 3]
 
     return (
@@ -18,11 +21,11 @@ const MyBank = () => {
                 </View>
 
                 {
-                    productData.map((index)=>{
-                        return(
+                    productData.map((index) => {
+                        return (
                             <View key={index} style={styles.bankView}>
                                 <View style={styles.bankLogo}>
-                                <MaterialCommunityIcons name="bank-outline" size={width * 0.16} color="green" />
+                                    <MaterialCommunityIcons name="bank-outline" size={width * 0.16} color="green" />
                                 </View>
                                 <View style={styles.bankContent}>
                                     <Text style={styles.bankHolderName}>Mohit rana</Text>
@@ -34,14 +37,18 @@ const MyBank = () => {
                     })
                 }
 
-                <View style={styles.buttonView}>
-                <MaterialIcons name="add-box" size={width * 0.1} color="white" />
-                <View style={styles.buttonContent}>
-                    <Text style={styles.buttonTitle}>Add bank account</Text>
-                    <Text style={styles.buttonHead}>saving account</Text>
-                </View>
-                </View>
-                
+                <TouchableOpacity style={styles.buttonView} onPress={
+            () => {
+              nav.navigate("AddBank")
+            }
+          }>
+                    <MaterialIcons name="add-box" size={width * 0.1} color="white" />
+                    <View style={styles.buttonContent}>
+                        <Text style={styles.buttonTitle}>Add bank account</Text>
+                        <Text style={styles.buttonHead}>saving account</Text>
+                    </View>
+                </TouchableOpacity>
+
             </ScrollView>
         </SafeAreaView>
     )
@@ -83,13 +90,13 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Medium',
         fontSize: width * 0.04
     },
-    
+
     bankName: {
         color: '#689694',
         fontFamily: 'Poppins-Medium',
         fontSize: width * 0.03
     },
-    
+
     bankPrimary: {
         color: '#48d0ff',
         fontFamily: 'Poppins-Bold',

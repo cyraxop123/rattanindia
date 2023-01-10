@@ -9,7 +9,7 @@ import { Entypo } from '@expo/vector-icons';
 const { width, height } = Dimensions.get('window')
 
 const Products = () => {
-    const productData = [1, 2, 3,4,5,6,7,8]
+    const productData = [1, 2, 3,4,5,6,7,8, 9]
 
     return (
         <SafeAreaView style={styles.container}>
@@ -56,7 +56,6 @@ const Products = () => {
                 <View>
                     <View style={styles.financeHeader}>
                         <Text style={styles.financeHeaderTitle}>Finance product</Text>
-                        <MaterialIcons name="grid-view" size={24} color="white" />
                     </View>
                     <View style={styles.financeProdFlatListView}>
                         <FlatList
@@ -105,9 +104,8 @@ const Products = () => {
                 <View>
                     <View style={styles.financeHeader}>
                         <Text style={styles.financeHeaderTitle}>Recommended products</Text>
-                        <MaterialIcons name="grid-view" size={24} color="white" />
                     </View>
-                    <View style={{ ...styles.prodFlatListView, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ ...styles.prodFlatListView, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center'}}>
                         {
                             productData.map((index) => {
                                 return (

@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, StatusBar, Dimensions, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 
 const {width, height} = Dimensions.get("window")
 
 const OnBoardingScreen = () => {
+  const nav = useNavigation()
   return (
     <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={"#002f09"}/>
@@ -16,7 +18,11 @@ const OnBoardingScreen = () => {
         <Text style={styles.descPara}>As a medium risk invester you can create your best portfolio based on funds we prepared you.</Text>
       </View>
       <View style={styles.buttonBox}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={
+          ()=>{
+            nav.navigate("ChooseScreen")
+          }
+        }>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>

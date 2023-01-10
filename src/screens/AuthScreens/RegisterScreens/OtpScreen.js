@@ -1,10 +1,13 @@
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, StatusBar, ScrollView, Dimensions, Image, KeyboardAvoidingView } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 
 const { width, height } = Dimensions.get('window')
 
 const OtpScreen = () => {
+    const nav = useNavigation()
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
@@ -25,7 +28,11 @@ const OtpScreen = () => {
                             <TextInput style={styles.inputBox} maxLength={1} cursorColor={'black'} textAlign='center' keyboardType={'numeric'} />
                         </View>
                         <View style={styles.buttonView}>
-                            <TouchableOpacity style={styles.button}>
+                            <TouchableOpacity style={styles.button} onPress={
+                                () => {
+                                    nav.navigate("CreatePassword")
+                                }
+                            }>
                                 <Text style={styles.buttonText}>Next</Text>
                             </TouchableOpacity>
                         </View>

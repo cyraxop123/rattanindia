@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, StatusBar, ScrollView, Dimensions, KeyboardAvoidingView } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 
 const { width, height } = Dimensions.get('window')
 
 const CreatePasswordScreen = () => {
+
+    const nav = useNavigation()
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
@@ -14,29 +18,33 @@ const CreatePasswordScreen = () => {
                     <Text style={styles.headerDesc}>Create strong password to login account!</Text>
                 </View>
                 <View style={styles.loginView}>
-                            <TextInput
-                                style={styles.loginInput}
-                                cursorColor={'black'}
-                                placeholder={'Password'}
-                                placeholderTextColor={'black'}
-                                keyboardType={'default'}
-                                secureTextEntry={true}
-                            />
-                            <TextInput
-                                style={styles.loginInput}
-                                cursorColor={'black'}
-                                placeholder={'Confirm password'}
-                                placeholderTextColor={'black'}
-                                keyboardType={'default'}
-                                secureTextEntry={true}
-                            />
+                    <TextInput
+                        style={styles.loginInput}
+                        cursorColor={'black'}
+                        placeholder={'Password'}
+                        placeholderTextColor={'black'}
+                        keyboardType={'default'}
+                        secureTextEntry={true}
+                    />
+                    <TextInput
+                        style={styles.loginInput}
+                        cursorColor={'black'}
+                        placeholder={'Confirm password'}
+                        placeholderTextColor={'black'}
+                        keyboardType={'default'}
+                        secureTextEntry={true}
+                    />
 
-                            <View style={styles.buttonView}>
-                                <TouchableOpacity style={styles.button}>
-                                    <Text style={styles.buttonText}>Create</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                    <View style={styles.buttonView}>
+                        <TouchableOpacity style={styles.button} onPress={
+                            () => {
+                                nav.navigate("Login")
+                            }
+                        }>
+                            <Text style={styles.buttonText}>Create</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </ScrollView>
         </SafeAreaView>
     )
@@ -71,13 +79,13 @@ const styles = StyleSheet.create({
         color: '#486e59',
         marginHorizontal: 30
     },
-    
+
     loginView: {
         height: height * 0.5,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    
+
     loginInput: {
         backgroundColor: 'white',
         width: width - 80,

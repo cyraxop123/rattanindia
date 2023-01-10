@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, StatusBar, Dimensions, TouchableOpacity, ImageBackground } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useNavigation } from '@react-navigation/native'
 
 
 const { width, height } = Dimensions.get("window")
 
 const ChooseScreen = () => {
+    const nav = useNavigation()
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
@@ -24,10 +27,18 @@ const ChooseScreen = () => {
                     </View>
 
                     <View style={styles.buttonView}>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={
+                            () => {
+                                nav.navigate("Login")
+                            }
+                        }>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={
+                            () => {
+                                nav.navigate("Signup")
+                            }
+                        }>
                             <Text style={styles.buttonText}>Sign up</Text>
                         </TouchableOpacity>
                     </View>
@@ -76,7 +87,7 @@ const styles = StyleSheet.create({
     },
 
     buttonText: {
-        width: width -100,
+        width: width - 100,
         paddingVertical: 10,
         textAlign: 'center',
         borderColor: 'white',

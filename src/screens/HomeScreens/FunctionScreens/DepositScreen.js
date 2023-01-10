@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import React from 'react'
 import { FontAwesome5 } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 
 
 const { width, height } = Dimensions.get('window')
@@ -8,6 +9,8 @@ const { width, height } = Dimensions.get('window')
 
 
 export default function DepositScreen() {
+    const nav = useNavigation()
+
 
 
 
@@ -15,11 +18,15 @@ export default function DepositScreen() {
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={'#00300b'} />
             <View style={styles.backNav}>
-                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <FontAwesome5 name="chevron-left" size={30} style={styles.icon} color="white" />
-                    <Text style={{ color: 'white', fontSize: 20, fontFamily: 'Poppins-Medium', paddingTop: 5 }}>Back</Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={
+                        () => {
+                            nav.goBack()
+                        }
+                    }>
+                        <FontAwesome5 name="chevron-left" size={30} style={styles.icon} color="white" />
+                        <Text style={{ color: 'white', fontSize: 20, fontFamily: 'Poppins-Medium', paddingTop: 5 }}>Back</Text>
+                    </TouchableOpacity>
+                </View>
 
             <View style={styles.textInputView}>
                 <Text style={styles.withdrawText}>Deposit</Text>

@@ -4,12 +4,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Entypo } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 
 const { width, height } = Dimensions.get('window')
 
 
 const HomeScreen = () => {
+
+    const nav = useNavigation()
+
 
     const productData = [1, 2, 3, 4, 5, 6, 7, 8]
     return (
@@ -65,7 +69,14 @@ const HomeScreen = () => {
                 <View>
                     <View style={styles.financeHeader}>
                         <Text style={styles.financeHeaderTitle}>Finance product</Text>
-                        <MaterialIcons name="grid-view" size={24} color="white" />
+                        <TouchableOpacity onPress={
+                            () => {
+                                nav.navigate("Products")
+                            }
+                        }>
+                            <MaterialIcons name="grid-view" size={24} color="white" />
+
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.financeProdFlatListView}>
                         <FlatList
@@ -114,7 +125,14 @@ const HomeScreen = () => {
                 <View>
                     <View style={styles.financeHeader}>
                         <Text style={styles.financeHeaderTitle}>Recommended products</Text>
-                        <MaterialIcons name="grid-view" size={24} color="white" />
+                        <TouchableOpacity onPress={
+                            () => {
+                                nav.navigate("Products")
+                            }
+                        }>
+                            <MaterialIcons name="grid-view" size={24} color="white" />
+
+                        </TouchableOpacity>
                     </View>
                     <View style={{ ...styles.prodFlatListView, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                         {

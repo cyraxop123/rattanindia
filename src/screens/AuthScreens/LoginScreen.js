@@ -1,10 +1,13 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ImageBackground, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useNavigation } from '@react-navigation/native'
 
 const { width, height } = Dimensions.get('window')
 
 const LoginScreen = () => {
+    const nav = useNavigation()
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
@@ -16,7 +19,7 @@ const LoginScreen = () => {
                 >
 
                     <LinearGradient
-                        colors={['rgba(4, 81, 7, 0.65)', 'rgba(4, 81, 7, 0.65)', '#002f09']}
+                        colors={['rgba(4, 81, 7, 0.65)', 'rgba(4, 81, 7, 0.10)', '#002f09']}
                         style={{ height: '100%', width: '100%' }}
                     >
 
@@ -44,7 +47,11 @@ const LoginScreen = () => {
                             />
 
                             <View style={styles.buttonView}>
-                                <TouchableOpacity style={styles.button}>
+                                <TouchableOpacity style={styles.button} onPress={
+                                    () => {
+                                        nav.navigate("Bottom")
+                                    }
+                                }>
                                     <Text style={styles.buttonText}>Login</Text>
                                 </TouchableOpacity>
                                 <Text style={styles.forgetText}>Forget your password?</Text>
@@ -52,7 +59,15 @@ const LoginScreen = () => {
                         </View>
                         <View style={styles.signupView}>
 
-                            <Text style={styles.signupText}>Dont Have an account? Signup</Text>
+                            <TouchableOpacity onPress={
+                                () => {
+                                    nav.navigate("Signup")
+                                }
+                            }>
+                                <Text style={styles.signupText}>Dont Have an account? Signup</Text>
+
+                            </TouchableOpacity>
+
 
                         </View>
 

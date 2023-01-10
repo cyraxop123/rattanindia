@@ -1,10 +1,13 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ImageBackground, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useNavigation } from '@react-navigation/native'
 
 const { width, height } = Dimensions.get('window')
 
 const SignUpScreen = () => {
+    const nav = useNavigation()
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
@@ -43,16 +46,26 @@ const SignUpScreen = () => {
                             />
 
                             <View style={styles.buttonView}>
-                                <TouchableOpacity style={styles.button}>
+                                <TouchableOpacity style={styles.button} onPress={
+          ()=>{
+            nav.navigate("Otp")
+          }
+        }>
                                     <Text style={styles.buttonText}>Create acount</Text>
                                 </TouchableOpacity>
 
                             </View>
                         </View>
                         <View style={styles.signupView}>
+                            <TouchableOpacity onPress={
+          ()=>{
+            nav.navigate("Login")
+          }
+        }>
 
                             <Text style={styles.signupText}>Already Have an account? Login</Text>
 
+                            </TouchableOpacity>
                         </View>
 
                     </LinearGradient>

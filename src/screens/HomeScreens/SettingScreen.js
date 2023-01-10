@@ -5,11 +5,15 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
 
 
 const { width, height } = Dimensions.get('window')
 
 const SettingScreen = () => {
+  const nav = useNavigation()
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={"#002f09"} />
@@ -25,21 +29,34 @@ const SettingScreen = () => {
 
         <View style={styles.walletView}>
           <Text style={styles.walletTitle}>Wallet</Text>
-          <TouchableOpacity style={styles.walletCard}>
+          <View style={styles.walletCard}>
             <View style={styles.wallentContent}>
 
               <Ionicons style={styles.walletIcon} name="wallet-outline" size={24} color="white" />
-              <Text style={styles.walletText}>Your Balance</Text>
+              <Text style={{ ...styles.walletText, fontSize: width * 0.032 }}>Withdrawl Balance</Text>
             </View>
             <Text style={styles.walletMoney}>₹ 300</Text>
-          </TouchableOpacity>
+          </View>
+
+
+          <View style={styles.walletCard}>
+            <View style={styles.wallentContent}>
+              <MaterialIcons style={styles.walletIcon} name="payment" size={24} color="white" />
+              <Text style={{ ...styles.walletText, fontSize: width * 0.032 }}>Investment Balance</Text>
+            </View>
+            <Text style={styles.walletMoney}>₹ 3000</Text>
+          </View>
         </View>
 
         {/* Manage Acoount */}
 
-        <View style={{ ...styles.walletView, marginTop: 50 }}>
+        <View style={{ ...styles.walletView, marginTop: 30 }}>
           <Text style={styles.walletTitle}>Account</Text>
-          <TouchableOpacity style={styles.walletCard}>
+          <TouchableOpacity style={styles.walletCard} onPress={
+            () => {
+              nav.navigate("Withdraw")
+            }
+          }>
             <View style={styles.wallentContent}>
               <FontAwesome5 name="money-bill-alt" style={styles.walletIcon} size={24} color="white" />
               <Text style={styles.walletText}>Withdraw Money</Text>
@@ -47,7 +64,11 @@ const SettingScreen = () => {
             <FontAwesome5 name="chevron-right" size={24} color="black" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }}>
+          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }} onPress={
+            () => {
+              nav.navigate("Deposit")
+            }
+          }>
             <View style={styles.wallentContent}>
               <AntDesign name="swap" style={styles.walletIcon} size={24} color="white" />
               <Text style={styles.walletText}>Deposit Money</Text>
@@ -55,7 +76,11 @@ const SettingScreen = () => {
             <FontAwesome5 name="chevron-right" size={24} color="black" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }}>
+          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }} onPress={
+            () => {
+              nav.navigate("Transcations")
+            }
+          }>
             <View style={styles.wallentContent}>
               <FontAwesome5 name="history" size={24} style={styles.walletIcon} color="white" />
               <Text style={styles.walletText}>Transcation</Text>
@@ -68,7 +93,11 @@ const SettingScreen = () => {
 
         <View style={{ ...styles.walletView, marginTop: 50 }}>
           <Text style={styles.walletTitle}>Refer and earn</Text>
-          <TouchableOpacity style={styles.walletCard}>
+          <TouchableOpacity style={styles.walletCard} onPress={
+            () => {
+              nav.navigate("MyReferCode")
+            }
+          }>
             <View style={styles.wallentContent}>
               <Feather name="users" size={24} style={styles.walletIcon} color="white" />
               <Text style={styles.walletText}>Total refer</Text>
@@ -76,7 +105,11 @@ const SettingScreen = () => {
             <FontAwesome5 name="chevron-right" size={24} color="black" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }}>
+          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }} onPress={
+            () => {
+              nav.navigate("MyRefers")
+            }
+          }>
             <View style={styles.wallentContent}>
               <MaterialIcons name="connect-without-contact" style={styles.walletIcon} size={24} color="white" />
               <Text style={styles.walletText}>Refer code</Text>
@@ -84,7 +117,11 @@ const SettingScreen = () => {
             <FontAwesome5 name="chevron-right" size={24} color="black" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }}>
+          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }} onPress={
+            () => {
+              nav.navigate("Lifafa")
+            }
+          }>
             <View style={styles.wallentContent}>
               <Ionicons name="ios-gift-outline" style={styles.walletIcon} size={24} color="white" />
               <Text style={styles.walletText}>Redeem Gift Card</Text>
@@ -114,9 +151,15 @@ const SettingScreen = () => {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.buttonView}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+
 
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView >
   )
 }
 
@@ -209,6 +252,30 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
     fontSize: width * 0.04,
     marginRight: 10
-  }
+  },
+  buttonView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 30,
+  },
+
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20
+  },
+
+  buttonText: {
+    width: width * 0.7,
+    paddingVertical: 15,
+    textAlign: 'center',
+    borderColor: '#a6d699',
+    borderWidth: 1.5,
+    borderRadius: 30,
+    color: 'white',
+    fontFamily: 'Poppins-Bold',
+    marginTop: 30,
+    fontSize: width * 0.03
+  },
 
 })

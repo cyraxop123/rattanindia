@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import React from 'react'
 import { FontAwesome5 } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 
 
 const { width, height } = Dimensions.get('window')
@@ -8,6 +9,8 @@ const { width, height } = Dimensions.get('window')
 
 
 export default function WithdrawScreen() {
+    const nav = useNavigation()
+
 
 
 
@@ -15,7 +18,11 @@ export default function WithdrawScreen() {
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={'#00300b'} />
             <View style={styles.backNav}>
-                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={
+                    () => {
+                        nav.goBack()
+                    }
+                }>
                     <FontAwesome5 name="chevron-left" size={30} style={styles.icon} color="white" />
                     <Text style={{ color: 'white', fontSize: 20, fontFamily: 'Poppins-Medium', paddingTop: 5 }}>Back</Text>
                 </TouchableOpacity>
@@ -25,8 +32,8 @@ export default function WithdrawScreen() {
                 <Text style={styles.withdrawText}>Withdraw</Text>
                 <View style={styles.inputView}>
                     <TextInput style={styles.withdrawInputBox} placeholder={"0"}
-                    placeholderTextColor="#98dc31" keyboardType={'number-pad'} maxLength={6} defaultValue="500" />
-                    <Text style={{ color: 'white', fontFamily: 'Poppins-Medium', marginLeft:2 }}>RS.</Text>
+                        placeholderTextColor="#98dc31" keyboardType={'number-pad'} maxLength={6} defaultValue="500" />
+                    <Text style={{ color: 'white', fontFamily: 'Poppins-Medium', marginLeft: 2 }}>RS.</Text>
                 </View>
                 <Text style={styles.withdrawTotalBalance}>Your balance: ₹500</Text>
             </View>
@@ -110,7 +117,7 @@ const styles = StyleSheet.create({
     },
 
     buttonText: {
-        width: width -100,
+        width: width - 100,
         paddingVertical: 10,
         textAlign: 'center',
         borderColor: 'white',

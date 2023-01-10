@@ -14,6 +14,12 @@ import SettingScreen from './src/screens/HomeScreens/SettingScreen'
 import WithdrawScreen from './src/screens/HomeScreens/FunctionScreens/WithdrawScreen';
 import DepositScreen from './src/screens/HomeScreens/FunctionScreens/DepositScreen';
 import Products from './src/screens/HomeScreens/Products';
+import Transaction from './src/screens/HomeScreens/FunctionScreens/Transcations';
+import MyReferCode from './src/screens/HomeScreens/FunctionScreens/MyReferCode';
+import MyRefers from './src/screens/HomeScreens/FunctionScreens/MyRefers';
+import LifafaScreen from './src/screens/HomeScreens/FunctionScreens/LifafaScreen';
+import SplashScreen from './src/screens/StartUpScreens/SplashScreen';
+import HomeNavigation from './src/navigation/navigation';
 
 export default function App() {
 
@@ -32,18 +38,6 @@ export default function App() {
 
 
   return (
-    // <OnBoardingScreen />
-    // <ChooseScreen />
-    // <LoginScreen />
-    // <SignUpScreen />
-    // <OtpScreen />
-    // <CreatePasswordScreen />
-    // <HomeScreen />
-    // <MyProd />
-    // <MyBank />
-    // <SettingScreen />
-    // <WithdrawScreen />
-    // <DepositScreen />
-    <Products />
+    <HomeNavigation />
   );
 }
