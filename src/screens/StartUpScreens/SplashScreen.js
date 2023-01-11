@@ -16,7 +16,6 @@ const SplashScreen = () => {
         try {
           const value = await AsyncStorage.getItem('token')
           if (value !== null) {
-            Alert("ok")
             navigation.dispatch(
               StackActions.replace("Bottom")
             )
@@ -26,7 +25,7 @@ const SplashScreen = () => {
             )
           }
         } catch (e) {
-          console.log("ok")
+          console.log(e)
         }
       }, 3000);
     },

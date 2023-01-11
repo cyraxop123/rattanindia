@@ -1,8 +1,12 @@
 import { StyleSheet, Text, View, StatusBar, SafeAreaView, Image, Dimensions, TextInput, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useState, useEffect } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, StackActions, useIsFocused } from '@react-navigation/native';
+import URL from '../../../lib/Url'
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 
@@ -10,27 +14,65 @@ const { width, height } = Dimensions.get('window');
 
 export default function AddBank() {
     const nav = useNavigation()
+    const [isUpi, setIsUpi] = useState(false)
+    const isFocus = useIsFocused()
 
+    const [holdername, setHoldername] = useState('')
+    const [accountNumber, setAccountNumber] = useState('')
+    const [IFSC, setIFSC] = useState('')
+    const [bankAccountName, setBankAccountName] = useState('')
+    const [upiId, setUpiId] = useState('')
 
+    const getExtra = useCallback(
+        async () => {
+            const respo = await fetch(`${URL}owner/get-extra/`)
+            const data = await respo.json()
+            setIsUpi(data.is_upi)
+        },
+        [isFocus],
+    )
 
-    const [data, setData] = useState({
-        holdername: '',
-        accountNumber: '',
-        IFSC: '',
-        bankAccountName: '',
-        upiId: '',
-    });
-    const [checkData, setCheckData] = useState({
-        holdername: '',
-        accountNumber: '',
-        IFSC: '',
-        bankAccountName: '',
-        upiId: '',
-    });
-    const [count, setCount] = useState(true);
+    const handleOnSubmit = async () => {
+            const url = `${URL}user/bindBank/`
+            const tokenop = await AsyncStorage.getItem("token")
+            if (tokenop !== null) {
+                const req = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({token: tokenop, accountNumber, holdername, IFSC, bankAccountName, upiId })
+                })
 
+                const res = await req.json()
+                if(res.success){
+                    Toast.show({
+                        type: 'success',
+                        text1: res.message,
+                    });
+                    nav.navigate("My Bank")
+                }else{
+                    Toast.show({
+                        type: 'error',
+                        text1: res.message,
+                    });
+                }
+            }else {
+                Toast.show({
+                    type: 'error',
+                    text1: "Login to continue",
+                });
+                nav.dispatch(
+                    StackActions.replace("Login")
+                )
+            }
+        }
 
+    useEffect(() => {
+      getExtra()
 
+    }, [])
+    
 
 
     return (
@@ -61,8 +103,8 @@ export default function AddBank() {
                                 placeholderTextColor={'grey'}
                                 keyboardType="default"
                                 returnKeyType="next"
-                                value={data.holdername}
-                                onChangeText={(e) => setData({ ...data, holdername: e })}
+                                value={holdername}
+                                onChangeText={(e) => setHoldername(e)}
                                 cursorColor={'black'}
 
                             />
@@ -72,8 +114,8 @@ export default function AddBank() {
                                 placeholderTextColor={'grey'}
                                 keyboardType="default"
                                 returnKeyType="next"
-                                value={`${data.accountNumber}`}
-                                onChangeText={(e) => setData({ ...data, accountNumber: e })}
+                                value={`${accountNumber}`}
+                                onChangeText={(e) => setAccountNumber(e)}
                                 cursorColor={'black'}
 
                             />
@@ -83,8 +125,8 @@ export default function AddBank() {
                                 placeholderTextColor={'grey'}
                                 keyboardType="default"
                                 returnKeyType="next"
-                                value={data.IFSC}
-                                onChangeText={(e) => setData({ ...data, IFSC: e })}
+                                value={IFSC}
+                                onChangeText={(e) => setIFSC(e)}
                                 cursorColor={'black'}
 
                             />
@@ -94,27 +136,27 @@ export default function AddBank() {
                                 placeholderTextColor={'grey'}
                                 keyboardType="default"
                                 returnKeyType="next"
-                                value={data.bankAccountName}
-                                onChangeText={(e) => setData({ ...data, bankAccountName: e })}
+                                value={bankAccountName}
+                                onChangeText={(e) => setBankAccountName(e)}
                                 cursorColor={'black'}
 
                             />
-                            {<TextInput
+                            {isUpi ? <TextInput
                                 style={{ ...styles.inputArea }}
                                 placeholder="UPI id"
                                 placeholderTextColor={'grey'}
                                 keyboardType="default"
                                 returnKeyType="next"
-                                value={data.upiId}
-                                onChangeText={(e) => setData({ ...data, upiId: e })}
+                                value={upiId}
+                                onChangeText={(e) => setUpiId(e)}
                                 cursorColor={'black'}
 
 
-                            />}
+                            /> : ""}
                         </KeyboardAvoidingView>
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={()=>handleOnSubmit()}>
                             <Text style={styles.buttonText}>Bind Account</Text>
                         </TouchableOpacity>
                     </View>

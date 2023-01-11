@@ -1,16 +1,93 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ImageBackground, TextInput, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, StackActions } from '@react-navigation/native'
+import URL from '../../lib/Url'
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loader from '../../lib/Loader'
 
 const { width, height } = Dimensions.get('window')
 
 const LoginScreen = () => {
     const nav = useNavigation()
+    const [number, setNumber] = useState('')
+    const [password, setPassword] = useState('')
+    const [isLoad, setIsLoad] = useState(false)
+    const [isNum, setIsNum] = useState(false)
+    const [isPass, setIsPass] = useState(false)
+
+
+    const handleOnLogin = async () => {
+        setIsLoad(true)
+        try {
+            if (!isNum) {
+                Toast.show({
+                    type: 'error',
+                    text1: "Invalid Number",
+                })
+                setIsLoad(false)
+                return 0
+            }
+            if (!isPass) {
+                Toast.show({
+                    type: 'error',
+                    text1: "Password length should be greater than 8",
+                })
+                setIsLoad(false)
+                return 0
+            }
+            const url = `${URL}auth/login/`
+            const req = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ number, password })
+            })
+            const res = await req.json()
+
+            if (JSON.stringify(res).includes("token")) {
+                await AsyncStorage.setItem("token", res.token)
+                Toast.show({
+                    type: 'success',
+                    text1: res.message,
+                })
+                nav.dispatch(
+                    StackActions.replace("Bottom")
+                )
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: res.message,
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        setIsLoad(false)
+    }
+
+    useEffect(() => {
+        if (number.length === 10) {
+            setIsNum(true)
+        } else {
+            setIsNum(false)
+
+        }
+        if (password.length >= 8) {
+            setIsPass(true)
+        } else {
+            setIsPass(false)
+        }
+
+    }, [number, password])
+
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
+            {isLoad ? <Loader /> : ""}
             <ScrollView style={styles.container}>
 
                 <ImageBackground style={styles.img}
@@ -36,6 +113,8 @@ const LoginScreen = () => {
                                 placeholderTextColor={'#002f09'}
                                 keyboardType={'phone-pad'}
                                 maxLength={10}
+                                onChangeText={(e) => setNumber(e)}
+                                value={number}
                             />
                             <TextInput
                                 style={styles.loginInput}
@@ -44,13 +123,13 @@ const LoginScreen = () => {
                                 placeholderTextColor={'#002f09'}
                                 keyboardType={'default'}
                                 secureTextEntry={true}
+                                onChangeText={(e) => setPassword(e)}
+                                value={password}
                             />
 
                             <View style={styles.buttonView}>
                                 <TouchableOpacity style={styles.button} onPress={
-                                    () => {
-                                        nav.navigate("Bottom")
-                                    }
+                                    () => handleOnLogin()
                                 }>
                                     <Text style={styles.buttonText}>Login</Text>
                                 </TouchableOpacity>

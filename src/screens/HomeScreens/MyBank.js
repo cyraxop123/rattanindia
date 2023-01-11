@@ -1,47 +1,134 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, Dimensions, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, StackActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import URL from '../../lib/Url';
+import Loader from '../../lib/Loader';
 
 
 const { width, height } = Dimensions.get('window')
 
 const MyBank = () => {
     const nav = useNavigation()
+    const isFocus = useIsFocused()
+    const [banks, setBanks] = useState([])
+    const [isLoad, setIsLoad] = useState(false)
 
-    const productData = [1, 2, 3]
+
+    const getBanks = useCallback(
+        async () => {
+            setIsLoad(true)
+            const url = `${URL}user/bankDetails/`
+            const tokenop = await AsyncStorage.getItem("token")
+            if (tokenop !== null) {
+
+                const req = await fetch(url,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 'token': tokenop })
+                    })
+                const res = await req.json()
+                if (JSON.stringify(res).includes("You dont have any back account linked")) {
+                    setBanks([])
+                } else setBanks(res.data)
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Login to continue',
+                });
+                nav.dispatch(
+                    StackActions.replace("Login")
+                )
+            }
+            setIsLoad(false)
+        },
+        [isFocus],
+    )
+
+    const handleOnBankUpdate = async (accountNumber) => {
+        setIsLoad(true)
+        const url = `${URL}user/updateBankDetails/`
+        const tokenop = await AsyncStorage.getItem("token")
+        if (tokenop !== null) {
+
+            const req = await fetch(url,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'token': tokenop, accountNumber, is_primary: true })
+                })
+            const res = await req.json()
+            console.log(res)
+            if (JSON.stringify(res).includes("false")) {
+                Toast.show({
+                    type: 'error',
+                    text1: res.message,
+                });
+
+            } else {
+                Toast.show({
+                    type: 'success',
+                    text1: res.message,
+                });
+                getBanks()
+            }
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Login to continue',
+            });
+            nav.dispatch(
+                StackActions.replace("Login")
+            )
+        }
+        setIsLoad(true)
+    }
+
+    useEffect(() => {
+        getBanks()
+    }, [isFocus])
+
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
-            <ScrollView style={styles.container}>
+            {isLoad && <Loader />}
+            {!isLoad && <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>My Bank's</Text>
                 </View>
 
                 {
-                    productData.map((index) => {
+                    banks.map((e, index) => {
                         return (
-                            <View key={index} style={styles.bankView}>
+                            <TouchableOpacity key={index} style={styles.bankView} onPress={() => handleOnBankUpdate(e.accountNumber)}>
                                 <View style={styles.bankLogo}>
                                     <MaterialCommunityIcons name="bank-outline" size={width * 0.16} color="green" />
                                 </View>
                                 <View style={styles.bankContent}>
-                                    <Text style={styles.bankHolderName}>Mohit rana</Text>
-                                    <Text style={styles.bankName}>State bank of india</Text>
-                                    <Text style={styles.bankPrimary}>Primary</Text>
+                                    <Text style={styles.bankHolderName}>{e.holderName}</Text>
+                                    <Text style={styles.bankName}>{e.bankAccountName}</Text>
+                                    <Text style={styles.bankName}>{e.accountNumber}</Text>
+                                    <Text style={{ ...styles.bankPrimary, color: `${e.primaryBank ? "skyblue" : "grey"}` }}>Primary</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )
                     })
                 }
 
                 <TouchableOpacity style={styles.buttonView} onPress={
-            () => {
-              nav.navigate("AddBank")
-            }
-          }>
+                    () => {
+                        nav.navigate("AddBank")
+                    }
+                }>
                     <MaterialIcons name="add-box" size={width * 0.1} color="white" />
                     <View style={styles.buttonContent}>
                         <Text style={styles.buttonTitle}>Add bank account</Text>
@@ -49,7 +136,7 @@ const MyBank = () => {
                     </View>
                 </TouchableOpacity>
 
-            </ScrollView>
+            </ScrollView>}
         </SafeAreaView>
     )
 }

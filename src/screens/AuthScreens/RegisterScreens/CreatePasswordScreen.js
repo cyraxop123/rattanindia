@@ -1,17 +1,93 @@
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, StatusBar, ScrollView, Dimensions, KeyboardAvoidingView } from 'react-native'
-import React from 'react'
-import { useNavigation } from '@react-navigation/native'
-
+import React, { useEffect, useState } from 'react'
+import { useNavigation, StackActions } from '@react-navigation/native'
+import URL from '../../../lib/Url'
+import Toast from 'react-native-toast-message';
+import Loader from '../../../lib/Loader'
 
 const { width, height } = Dimensions.get('window')
 
-const CreatePasswordScreen = () => {
+const CreatePasswordScreen = ({route}) => {
 
     const nav = useNavigation()
+    const {name, number, referId} = route.params
+    const [password, setPassword] = useState('')
+    const [confirmPass, setConfirmPass] = useState('')
+    const [isLoad, setIsLoad] = useState(false)
+    const [isPass, setIsPass] = useState(false)
+    const [isConf, setIsConf] = useState(false)
+
+    const handleOnSubmit = async()=>{
+        setIsLoad(true)
+        try {
+            if (!isPass) {
+                Toast.show({
+                    type: 'error',
+                    text1: "Password length should be greater than 8",
+                })
+                setIsLoad(false)
+                return 0
+            }
+            if (!isConf) {
+                Toast.show({
+                    type: 'error',
+                    text1: "Password not matched",
+                })
+                setIsLoad(false)
+                return 0
+            }
+            const url = `${URL}auth/signup/`
+            const req = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name, number, password, referId })
+            })
+            const res = await req.json()
+
+            if (JSON.stringify(res).includes("true")) {
+                Toast.show({
+                    type: 'success',
+                    text1: res.message,
+                })
+                nav.dispatch(
+                    StackActions.replace("Otp", {
+                        number
+                    })
+                )
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: res.message,
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        setIsLoad(false)
+    }
+
+
+    useEffect(() => {
+        if (password.length >= 8) {
+            setIsPass(true)
+        } else {
+            setIsPass(false)
+
+        }
+        if (confirmPass === password) {
+            setIsConf(true)
+        } else {
+            setIsConf(false)
+        }
+
+    }, [confirmPass, password])
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
+            {isLoad ? <Loader /> : ""}
             <ScrollView style={styles.container}>
                 <View style={styles.roundShape}>
                     <Text style={styles.headerDescTitle}>Create Password</Text>
@@ -25,7 +101,9 @@ const CreatePasswordScreen = () => {
                         placeholderTextColor={'black'}
                         keyboardType={'default'}
                         secureTextEntry={true}
-                    />
+                        onChangeText={(e)=> setPassword(e)}
+                        value={password}
+                        />
                     <TextInput
                         style={styles.loginInput}
                         cursorColor={'black'}
@@ -33,13 +111,13 @@ const CreatePasswordScreen = () => {
                         placeholderTextColor={'black'}
                         keyboardType={'default'}
                         secureTextEntry={true}
+                        onChangeText={(e)=> setConfirmPass(e)}
+                        value={confirmPass}
                     />
 
                     <View style={styles.buttonView}>
                         <TouchableOpacity style={styles.button} onPress={
-                            () => {
-                                nav.navigate("Login")
-                            }
+                            () => handleOnSubmit()
                         }>
                             <Text style={styles.buttonText}>Create</Text>
                         </TouchableOpacity>

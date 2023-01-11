@@ -1,12 +1,78 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ImageBackground, TextInput, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
+import Toast from 'react-native-toast-message';
+import * as Clipboard from 'expo-clipboard';
+
 
 const { width, height } = Dimensions.get('window')
 
 const SignUpScreen = () => {
     const nav = useNavigation()
+
+    const [name, setName] = useState('')
+    const [number, setNumber] = useState('')
+    const [referId, setReferId] = useState('')
+    const [isNum, setIsNum] = useState(false)
+    const [isName, setIsName] = useState(false)
+
+    const onSubmit = () => {
+
+        if (!isName) {
+            Toast.show({
+                type: 'error',
+                text1: "Enter your name",
+            })
+            return 0
+        }
+
+        if (!isNum) {
+            Toast.show({
+                type: 'error',
+                text1: "Invalid Number",
+            })
+
+            return 0
+        }
+        nav.navigate("CreatePassword", {
+            name,
+            number
+        })
+    }
+
+
+
+    const fetchCopiedText = useCallback(
+        async () => {
+            const text = await Clipboard.getStringAsync();
+            if (text.includes("refer=")){
+                setReferId(text.split("=")[1])
+            }
+        },
+        [],
+    )
+
+    useEffect(() => {
+        fetchCopiedText()
+    }, [])
+
+
+    useEffect(() => {
+        if (number.length === 10) {
+            setIsNum(true)
+        } else {
+            setIsNum(false)
+
+        }
+        if (name.length >= 3) {
+            console.log(name)
+            setIsName(true)
+        } else {
+            setIsName(false)
+        }
+    }, [name, number])
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -35,6 +101,8 @@ const SignUpScreen = () => {
                                 placeholder={'Enter your name'}
                                 placeholderTextColor={'#002f09'}
                                 keyboardType={'default'}
+                                onChangeText={(e) => setName(e)}
+                                value={name}
                             />
                             <TextInput
                                 style={styles.loginInput}
@@ -43,14 +111,23 @@ const SignUpScreen = () => {
                                 placeholderTextColor={'#002f09'}
                                 keyboardType={'number-pad'}
                                 maxLength={10}
+                                onChangeText={(e) => setNumber(e)}
+                                value={number}
+                            />
+                            <TextInput
+                                style={styles.loginInput}
+                                cursorColor={'#002f09'}
+                                placeholder={'Refer id (optional)'}
+                                placeholderTextColor={'#002f09'}
+                                keyboardType={'default'}
+                                onChangeText={(e) => setReferId(e)}
+                                value={referId}
                             />
 
                             <View style={styles.buttonView}>
                                 <TouchableOpacity style={styles.button} onPress={
-          ()=>{
-            nav.navigate("Otp")
-          }
-        }>
+                                    () => onSubmit()
+                                }>
                                     <Text style={styles.buttonText}>Create acount</Text>
                                 </TouchableOpacity>
 
@@ -58,12 +135,12 @@ const SignUpScreen = () => {
                         </View>
                         <View style={styles.signupView}>
                             <TouchableOpacity onPress={
-          ()=>{
-            nav.navigate("Login")
-          }
-        }>
+                                () => {
+                                    nav.navigate("Login")
+                                }
+                            }>
 
-                            <Text style={styles.signupText}>Already Have an account? Login</Text>
+                                <Text style={styles.signupText}>Already Have an account? Login</Text>
 
                             </TouchableOpacity>
                         </View>

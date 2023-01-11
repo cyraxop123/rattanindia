@@ -1,10 +1,14 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, FlatList, Dimensions, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, FlatList, Dimensions, Image, TouchableOpacity, Modal, TextInput } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Entypo } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused, StackActions } from '@react-navigation/native';
+import Loader from '../../lib/Loader';
+import URL from '../../lib/Url';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const { width, height } = Dimensions.get('window')
@@ -13,23 +17,212 @@ const { width, height } = Dimensions.get('window')
 const HomeScreen = () => {
 
     const nav = useNavigation()
+    const isFocus = useIsFocused()
+    const [isLoad, setisLoad] = useState(false)
+    const [modalVisiable, setModalVisiable] = useState(false)
+    const [investAmount, setInvestAmount] = useState(0)
+    const [name, setName] = useState('')
 
 
-    const productData = [1, 2, 3, 4, 5, 6, 7, 8]
+    const [financeData, setfinanceData] = useState([])
+    const [topProducts, setTopProducts] = useState([])
+    const [recProducts, setRecProducts] = useState([])
+
+    const getUserInfo = useCallback(
+        async () => {
+            setisLoad(true)
+            let tokenop = await AsyncStorage.getItem('token');
+            console.log(tokenop)
+            if (tokenop !== null) {
+                setisLoad(true);
+                const Infourl = `${URL}user/get-user-info/`;
+                const UserRespo = await fetch(Infourl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: tokenop }),
+                });
+                const respData = await UserRespo.json();
+
+                if (JSON.stringify(respData).includes("false")) {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Login to continue',
+                    });
+                    nav.dispatch(
+                        StackActions.replace('Login')
+                    );
+                }
+                setName(respData.name);
+            };
+        },
+        [],
+    )
+
+    const getFinanceProducts = useCallback(
+        async () => {
+            const url = `${URL}products/financeProducts/`
+            const req = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            const res = await req.json()
+            setfinanceData(
+                res.map((e, index) => {
+                    if (index < 5) {
+                        return e
+                    }
+                })
+            )
+
+
+        },
+        [],
+    )
+
+    const getProducts = useCallback(
+        async () => {
+            const url = `${URL}products/product/`
+            const req = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            const res = await req.json()
+            const recentprods = res.sort((a, b) => b.total_sell - a.total_sell)
+            setTopProducts(
+                recentprods.map((e, index) => {
+                    if (index < 5) {
+                        return e
+                    }
+                })
+            )
+
+
+        },
+        [],
+    )
+
+    const getRecProducts = useCallback(
+        async () => {
+            const url = `${URL}products/product/`
+            const req = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            const res = await req.json()
+            setRecProducts(res)
+            setisLoad(false)
+        },
+        [],
+    )
+
+
+    const handleOnSubmitProduct = async (unique_id) => {
+        const url = `${URL}products/buy/product/`
+        let tokenop = await AsyncStorage.getItem('token');
+        if (tokenop !== null) {
+            setisLoad(true);
+            const UserRespo = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'token': tokenop, 'unique_id': unique_id })
+            });
+            const respData = await UserRespo.json();
+            if (respData.success) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Product buy successfully',
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: respData.message,
+                });
+            }
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Login to continue',
+            });
+            nav.dispatch(
+                StackActions.replace('Login')
+            );
+        }
+        setisLoad(false);
+    };
+
+    const buyProduct = async (unique_id) => {
+        let tokenop = await AsyncStorage.getItem('token');
+        if (tokenop !== null) {
+            setisLoad(true);
+            const Infourl = `${URL}products/buy/financeProduct/`;
+            const UserRespo = await fetch(Infourl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'token': tokenop, 'unique_id': unique_id, amt: investAmount })
+            });
+            const respData = await UserRespo.json();
+            if (respData.success) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Product buy successfully',
+                });
+                setModalVisiable(!modalVisiable)
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: respData.message,
+                });
+                setModalVisiable(!modalVisiable)
+            }
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Login to continue',
+            });
+            nav.dispatch(
+                StackActions.replace('Login')
+            );
+        }
+        setisLoad(false);
+    };
+
+
+
+    useEffect(() => {
+        getUserInfo()
+        getFinanceProducts()
+        getProducts()
+        getRecProducts()
+    }, [isFocus])
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
-            <ScrollView style={styles.container}>
+            {isLoad && <Loader />}
+
+            {!isLoad && <ScrollView style={styles.container}>
 
 
                 <View style={styles.profileHeadView}>
                     <View style={styles.nameView}>
                         <Text style={styles.greeting}>Hello,</Text>
-                        <Text style={styles.greetingName}>Mohit Rana 👋</Text>
+                        <Text style={styles.greetingName}>{name} 👋</Text>
                     </View>
-                    <View style={styles.walletView}>
+                    <TouchableOpacity style={styles.walletView} onPress={() => nav.navigate("Setting")}>
                         <Ionicons name="wallet-outline" size={24} color="black" style={styles.icon} />
-                    </View>
+                    </TouchableOpacity>
                 </View>
 
 
@@ -39,18 +232,23 @@ const HomeScreen = () => {
                     <Text style={styles.ratedProdTitle}>TOP RATED PRODUCT</Text>
                     <View style={styles.prodFlatListView}>
                         <FlatList
-                            data={productData}
+                            data={topProducts}
                             showsHorizontalScrollIndicator={false}
-                            keyExtractor={(item) => item}
+                            keyExtractor={(item) => item.unique_id}
                             horizontal={true}
-                            renderItem={(item) => {
+                            renderItem={({ item }) => {
                                 return (
-                                    <View key={item}>
+                                    <View key={item.unique_id}>
                                         <View style={styles.prodCard}>
-                                            <Image style={styles.prodImage} source={require("../../../assets/images/demoImage.png")} />
+                                            <Image style={styles.prodImage} source={{ uri: item.image_url }} />
                                             <View style={styles.prodButtonView}>
-                                                <Text style={styles.prodButton}>Buy now</Text>
-                                                <Text style={styles.prodRuppe}>₹ 500</Text>
+                                                <TouchableOpacity onPress={() => {
+                                                    handleOnSubmitProduct(item.unique_id)
+                                                }}>
+
+                                                    <Text style={styles.prodButton}>Buy now</Text>
+                                                </TouchableOpacity>
+                                                <Text style={styles.prodRuppe}>₹ {item.price}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -66,6 +264,7 @@ const HomeScreen = () => {
 
                 {/* Finanace product slider */}
 
+
                 <View>
                     <View style={styles.financeHeader}>
                         <Text style={styles.financeHeaderTitle}>Finance product</Text>
@@ -80,13 +279,43 @@ const HomeScreen = () => {
                     </View>
                     <View style={styles.financeProdFlatListView}>
                         <FlatList
-                            data={productData}
+                            data={financeData}
                             showsHorizontalScrollIndicator={false}
-                            keyExtractor={(item) => item}
+                            keyExtractor={(item) => item.unique_id}
                             horizontal={true}
-                            renderItem={(item) => {
+                            renderItem={({ item }) => {
                                 return (
-                                    <View key={item}>
+                                    <View>
+                                        <Modal
+                                            animationType="slide"
+                                            transparent={true}
+                                            visible={modalVisiable}
+                                            onRequestClose={() => {
+                                                setModalVisiable(!modalVisiable);
+                                            }}
+                                        >
+                                            <View style={styles.centeredView}>
+                                                <View style={styles.modalView}>
+                                                    <Text style={styles.durationTextModal}>Min. invest should be ₹{item.minimum_invest}</Text>
+                                                    <TextInput
+                                                        style={{ ...styles.inputArea }}
+                                                        placeholder="Enter Amount"
+                                                        placeholderTextColor={'black'}
+                                                        keyboardType="numeric"
+                                                        returnKeyType="next"
+                                                        onChangeText={(e) => setInvestAmount(e)}
+                                                        value={investAmount}
+                                                    />
+                                                    <TouchableOpacity style={{ ...styles.buttonModal }} onPress={() => buyProduct(item.unique_id)}>
+                                                        <Text style={styles.buttonTextModal}>INVEST</Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity onPress={() => setModalVisiable(!modalVisiable)}>
+                                                        <Text style={styles.buttonTextCancel}>CANCEL</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </Modal>
+
                                         <LinearGradient
                                             colors={['#7fc71a', '#16460e']}
                                             style={styles.financeProdCard}
@@ -102,11 +331,11 @@ const HomeScreen = () => {
                                                     <Text style={styles.financeCardDetailsTitle}>₹ Min. Invest</Text>
                                                 </View>
                                                 <View style={styles.financeCardDetailsAns}>
-                                                    <Text style={styles.financeCardDetailsAns1}>30 Days</Text>
-                                                    <Text style={styles.financeCardDetailsAns1}>₹ 300</Text>
+                                                    <Text style={styles.financeCardDetailsAns1}>{item.validity} Days</Text>
+                                                    <Text style={styles.financeCardDetailsAns1}>₹ {item.minimum_invest}</Text>
                                                 </View>
                                                 <View style={styles.buttonView}>
-                                                    <TouchableOpacity style={styles.button}>
+                                                    <TouchableOpacity style={styles.button} onPress={() => setModalVisiable(!modalVisiable)}>
                                                         <Text style={styles.buttonText}>Invest Now</Text>
                                                     </TouchableOpacity>
                                                 </View>
@@ -136,14 +365,19 @@ const HomeScreen = () => {
                     </View>
                     <View style={{ ...styles.prodFlatListView, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                         {
-                            productData.map((index) => {
+                            recProducts.map((item, index) => {
                                 return (
                                     <View key={index}>
                                         <View style={{ ...styles.prodCard, marginVertical: 15 }}>
-                                            <Image style={styles.prodImage} source={require("../../../assets/images/demoImage.png")} />
+                                            <Image style={styles.prodImage} source={{ uri: item.image_url }} />
                                             <View style={styles.prodButtonView}>
-                                                <Text style={styles.prodButton}>Buy now</Text>
-                                                <Text style={styles.prodRuppe}>₹ 500</Text>
+                                                <TouchableOpacity onPress={() => {
+                                                    handleOnSubmitProduct(item.unique_id)
+                                                }}>
+                                                    <Text style={styles.prodButton}>Buy now</Text>
+
+                                                </TouchableOpacity>
+                                                <Text style={styles.prodRuppe}>₹ {item.price}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -157,7 +391,7 @@ const HomeScreen = () => {
 
 
 
-            </ScrollView >
+            </ScrollView >}
         </SafeAreaView >
     )
 }
@@ -266,6 +500,7 @@ const styles = StyleSheet.create({
     financeProdFlatListView: {
         marginTop: 10,
         flexGrow: 0,
+        marginLeft: 10
     },
 
     financeProdCard: {
@@ -347,6 +582,70 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
 
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(15, 14, 15, 0.79)'
+    },
+
+
+    modalView: {
+        backgroundColor: "#002f09",
+        borderRadius: 10,
+        width: width * 0.8,
+        height: height * 0.32,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        justifyContent: 'center'
+    },
+    inputArea: {
+        backgroundColor: 'white',
+        paddingVertical: 12,
+        paddingHorizontal: 15,
+        borderRadius: 10,
+        fontFamily: 'Poppins-Regular',
+        fontWeight: '400',
+        color: 'black',
+        fontSize: 15,
+        marginTop: 10,
+        width: width * 0.6,
+        marginBottom: 20
+    },
+    buttonModal: {
+        width: width * 0.5,
+        paddingVertical: 9,
+        paddingHorizontal: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20,
+        marginBottom: 20,
+        borderColor: 'white',
+        borderWidth: 3
+    },
+    buttonTextModal: {
+        fontFamily: 'Poppins-Bold',
+        fontSize: width * 0.04,
+        color: 'yellow',
+    },
+    buttonTextCancel: {
+        fontFamily: 'Poppins-Medium',
+        fontSize: width * 0.04,
+        color: 'red',
+    },
+    durationTextModal: {
+        color: 'white',
+        fontFamily: 'Poppins-Medium',
+        marginRight: 8,
+        fontSize: width * 0.033,
+    }
 
 
 })
