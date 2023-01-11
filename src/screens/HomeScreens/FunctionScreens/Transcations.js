@@ -1,6 +1,12 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, StackActions } from '@react-navigation/native';
+import Loader from '../../../lib/Loader'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import URL from '../../../lib/Url'
+import Toast from 'react-native-toast-message';
+import { useCallback, useEffect, useState } from 'react';
+
 
 
 
@@ -8,6 +14,46 @@ const { width, height } = Dimensions.get('window');
 
 export default function Transaction() {
     const nav = useNavigation()
+    const isFocus = useIsFocused()
+
+    const [isLoad, setIsLoad] = useState(false)
+    const [trans, setTrans] = useState([])
+
+    const getUserTrans = useCallback(
+        async () => {
+          setIsLoad(true)
+          let tokenop = await AsyncStorage.getItem('token');
+          if (tokenop !== null) {
+            const Infourl = `${URL}user/get-user-transaction/`;
+            const UserRespo = await fetch(Infourl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ token: tokenop }),
+            });
+            const respData = await UserRespo.json();
+            console.log(respData)
+    
+            if (JSON.stringify(respData).includes("Invalid")) {
+              Toast.show({
+                type: 'error',
+                text1: 'Login to continue',
+              });
+            }
+            setTrans(respData);
+          };
+          setIsLoad(false)
+        },
+        [isFocus],
+      )
+    
+      useEffect(() => {
+        getUserTrans()
+      }, [isFocus])
+
+
+
 
     const data = [1, 5, 6, 5, 3, 1, 3, 54, 6, 3]
     return (
@@ -23,27 +69,28 @@ export default function Transaction() {
                     <Text style={{ color: 'white', fontSize: 20, fontFamily: 'Poppins-Medium', paddingTop: 5 }}>Back</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView>
+                    {isLoad && <Loader />}
+            {!isLoad && <ScrollView>
 
                 {<View style={styles.transactionView}>
                     <Text style={styles.title}>Transaction</Text>
                     <View style={styles.cardView}>
-                        {data.map((e, index) => {
+                        {trans.map((e, index) => {
                             return <View key={index} style={styles.card}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.logo}><FontAwesome5 name="box" size={24} style={styles.icon} color="#8ed335" /></Text>
                                     <View>
-                                        <Text style={styles.name}>oksfsafas</Text>
-                                        <Text style={styles.category}>Category: okkxczxcvxzvxxvvvxvaaaaax</Text>
-                                        <Text style={styles.category}>Trans. ID: vddvd</Text>
+                                        <Text style={styles.name}>{e.title}</Text>
+                                        <Text style={styles.category}>Category: {e.catagory}</Text>
+                                        <Text style={styles.category}>Trans. ID: {e.transactionId}</Text>
                                     </View>
                                 </View>
-                                <Text style={{ ...styles.money }}>₹554</Text>
+                                <Text style={{ ...styles.money, color: `${e.up_or_down === "down" ? "red" : "green"}` }}>₹{e.price}</Text>
                             </View>;
                         })}
                     </View>
                 </View>}
-            </ScrollView>
+            </ScrollView>}
         </SafeAreaView>
     );
 }
@@ -82,7 +129,7 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: width - 60,
+        width: width - 30,
         backgroundColor: 'white',
         paddingVertical: 15,
         paddingHorizontal: 10,
@@ -93,14 +140,14 @@ const styles = StyleSheet.create({
     logo: {
         backgroundColor: '#00300b',
         borderRadius: 100,
-        paddingVertical: 13,
-        paddingHorizontal: 13,
-        marginRight: 13,
+        paddingVertical: 12,
+        paddingHorizontal: 12,
+        marginRight: 10,
     },
     name: {
         fontFamily: 'Poppins-Bold',
         color: 'black',
-        fontSize: width * 0.035,
+        fontSize: width * 0.03,
         textTransform: 'uppercase'
     },
     money: {

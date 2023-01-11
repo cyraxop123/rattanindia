@@ -1,15 +1,63 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, StatusBar, Dimensions, TouchableOpacity, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesome5 } from '@expo/vector-icons';
+import URL from '../../../lib/Url'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import Loader from '../../../lib/Loader'
 
 
 const { width, height } = Dimensions.get("window")
 
 const LifafaScreen = () => {
+
+    const nav = useNavigation()
+
+    const [code, setCode] = useState('')
+    const [isLoad, setIsLoad] = useState(false)
+
+    const handleOnSubmit = async () => {
+        try {
+            setIsLoad(true)
+            const token = await AsyncStorage.getItem("token")
+            if (token !== null) {
+                const url = `${URL}user/submit-lifafa/`
+                const repo = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token, lifafa: code }),
+                });
+                const getDataFromApi = await repo.json();
+                if (getDataFromApi.success) {
+                    Toast.show({
+                        type: 'success',
+                        text1: "Lifafa activated successfully"
+                    })
+                    setTimeout(() => {
+                        nav.navigate("Transcations")
+                    }, 2000);
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: getDataFromApi.message
+                    })
+                }
+                setIsLoad(false);
+
+            }
+        } catch (error) {
+
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={"#002f09"} />
-            <View style={styles.desc}>
+            {isLoad && <Loader />}
+            {!isLoad && <View style={styles.desc}>
                 <FontAwesome5 name="gift" style={styles.icon} size={40} color="#8ed335" />
                 <Text style={styles.descTitle}>Redeem gift card</Text>
                 <TextInput
@@ -19,13 +67,15 @@ const LifafaScreen = () => {
                     placeholderTextColor={'#002f09'}
                     keyboardType={'default'}
                     maxLength={10}
+                    onChangeText={(e)=> setCode(e)}
+                    value={code}
                 />
                 <View style={styles.buttonView}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={()=> handleOnSubmit()}>
                         <Text style={styles.buttonText}>Submit</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View>}
         </SafeAreaView>
     )
 }
@@ -69,7 +119,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         fontFamily: 'Poppins-Bold',
         fontSize: width * 0.031,
-        color: 'white',
+        color: 'black',
         marginBottom: 20,
         marginTop: 20
     },

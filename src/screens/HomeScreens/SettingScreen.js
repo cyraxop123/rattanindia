@@ -1,28 +1,76 @@
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView, Dimensions, Image } from 'react-native'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, StackActions } from '@react-navigation/native';
+import URL from '../../lib/Url';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../lib/Loader'
+import Toast from 'react-native-toast-message/lib/src/Toast';
 
 
 
-const { width, height } = Dimensions.get('window')
+
+const { width } = Dimensions.get('window')
 
 const SettingScreen = () => {
   const nav = useNavigation()
+  const isFocus = useIsFocused()
+
+  const [info, setInfo] = useState([])
+  const [isLoad, setIsLoad] = useState(false)
+
+  const getUserInfo = useCallback(
+    async () => {
+      setIsLoad(true)
+      let tokenop = await AsyncStorage.getItem('token');
+      if (tokenop !== null) {
+        const Infourl = `${URL}user/get-user-info/`;
+        const UserRespo = await fetch(Infourl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token: tokenop }),
+        });
+        const respData = await UserRespo.json();
+
+        if (JSON.stringify(respData).includes("false")) {
+          Toast.show({
+            type: 'error',
+            text1: 'Login to continue',
+          });
+          nav.dispatch(
+            StackActions.replace('Login')
+          );
+        }
+        setInfo(respData);
+      };
+      setIsLoad(false)
+    },
+    [isFocus],
+  )
+
+  useEffect(() => {
+    getUserInfo()
+  }, [isFocus])
+
+
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={"#002f09"} />
-      <ScrollView style={styles.container}>
+      {isLoad && <Loader />}
+
+      {!isLoad && <ScrollView style={styles.container}>
         <View style={styles.roundShape}>
           <Text style={styles.headerTitle}>My Account</Text>
           <Image style={styles.headerImage} source={require('../../../assets/images/user.png')} />
-          <Text style={styles.headerDescTitle}>Mohit rana</Text>
-          <Text style={styles.headerDesc}>+91 9399902289</Text>
+          <Text style={styles.headerDescTitle}>{info.name}</Text>
+          <Text style={styles.headerDesc}>+91 {info.mobile_number}</Text>
         </View>
 
         {/* wallet */}
@@ -35,7 +83,7 @@ const SettingScreen = () => {
               <Ionicons style={styles.walletIcon} name="wallet-outline" size={24} color="white" />
               <Text style={{ ...styles.walletText, fontSize: width * 0.032 }}>Withdrawl Balance</Text>
             </View>
-            <Text style={styles.walletMoney}>₹ 300</Text>
+            <Text style={styles.walletMoney}>₹ {info.depositAmount}</Text>
           </View>
 
 
@@ -44,7 +92,7 @@ const SettingScreen = () => {
               <MaterialIcons style={styles.walletIcon} name="payment" size={24} color="white" />
               <Text style={{ ...styles.walletText, fontSize: width * 0.032 }}>Investment Balance</Text>
             </View>
-            <Text style={styles.walletMoney}>₹ 3000</Text>
+            <Text style={styles.walletMoney}>₹ {info.balance}</Text>
           </View>
         </View>
 
@@ -152,13 +200,18 @@ const SettingScreen = () => {
         </View>
 
         <View style={styles.buttonView}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={async()=>{
+            await AsyncStorage.clear()
+            nav.dispatch(
+              StackActions.replace("Login")
+            )
+          }}>
             <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
         </View>
 
 
-      </ScrollView>
+      </ScrollView>}
     </SafeAreaView >
   )
 }
