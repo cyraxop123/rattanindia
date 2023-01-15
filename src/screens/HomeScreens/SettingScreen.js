@@ -143,7 +143,7 @@ const SettingScreen = () => {
           <Text style={styles.walletTitle}>Refer and earn</Text>
           <TouchableOpacity style={styles.walletCard} onPress={
             () => {
-              nav.navigate("MyReferCode")
+              nav.navigate("MyRefers")
             }
           }>
             <View style={styles.wallentContent}>
@@ -155,7 +155,7 @@ const SettingScreen = () => {
 
           <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }} onPress={
             () => {
-              nav.navigate("MyRefers")
+              nav.navigate("MyReferCode")
             }
           }>
             <View style={styles.wallentContent}>

@@ -1,8 +1,13 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity, Share } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { Entypo } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import URL from '../../../lib/Url'
+import Loader from '../../../lib/Loader'
+import Toast from 'react-native-toast-message';
 
 
 
@@ -10,6 +15,64 @@ const { width, height } = Dimensions.get('window');
 
 export default function MyReferCode() {
     const nav = useNavigation()
+    const [isLoad, setIsLoad] = useState(false)
+    const [referCode, setReferCode] = useState('')
+
+    const onShare = async () => {
+        try {
+          const result = await Share.share({
+            message:
+              'RattanIndia | YOUR REFER CODE: JDNJdjD',
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          Alert.alert(error.message);
+        }
+      };
+
+    const getUserInfo = useCallback(
+        async () => {
+            setIsLoad(true)
+            let tokenop = await AsyncStorage.getItem('token');
+            if (tokenop !== null) {
+                const Infourl = `${URL}user/get-user-info/`;
+                const UserRespo = await fetch(Infourl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: tokenop }),
+                });
+                const respData = await UserRespo.json();
+
+                if (JSON.stringify(respData).includes("false")) {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Login to continue',
+                    });
+                    nav.dispatch(
+                        StackActions.replace('Login')
+                    );
+                }
+                setReferCode(respData.referId);
+            };
+            setIsLoad(false)
+        },
+        [],
+    )
+
+    useEffect(() => {
+        getUserInfo()
+    }, [])
+
 
     const data = [1]
     return (
@@ -36,10 +99,13 @@ export default function MyReferCode() {
                                     <Text style={styles.logo}><Entypo name="link" size={24} style={styles.icon} color="#8ed335" /></Text>
                                     <View>
                                         <Text style={styles.name}>Your refer link</Text>
-                                        <Text style={styles.category}>Url: https://opk</Text>
+                                        <Text style={styles.category}>Code: {`${referCode}`}</Text>
                                     </View>
                                 </View>
+                                <TouchableOpacity onPress={()=> onShare()}>
                                 <Text style={{ ...styles.money }}><EvilIcons name="share-google" size={30} color="black" /></Text>
+
+                                </TouchableOpacity>
                             </View>;
                         })}
                     </View>

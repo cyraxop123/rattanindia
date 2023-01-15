@@ -13,6 +13,9 @@ import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import SignUpScreen from '../screens/AuthScreens/RegisterScreens/SignUpScreen';
 import OtpScreen from '../screens/AuthScreens/RegisterScreens/OtpScreen';
 import CreatePasswordScreen from '../screens/AuthScreens/RegisterScreens/CreatePasswordScreen';
+import ForgetPassword from '../screens/AuthScreens/ForgetPasswordScreen.js/ForgetPassword';
+import ResetPassword from '../screens/AuthScreens/ForgetPasswordScreen.js/ResetPassword';
+import ForgetOtp from '../screens/AuthScreens/ForgetPasswordScreen.js/ForgetOtp'
 
 // Other Screens
 import DepositScreen from '../screens/HomeScreens/FunctionScreens/DepositScreen';
@@ -39,6 +42,10 @@ export default function HomeNavigation() {
         <Stack.Screen name="Signup" component={SignUpScreen} options={{headerShown: false}}/>
         <Stack.Screen name="CreatePassword" component={CreatePasswordScreen} options={{headerShown: false}}/>
         <Stack.Screen name="Otp" component={OtpScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="Forget" component={ForgetPassword} options={{headerShown: false}}/>
+        <Stack.Screen name="ResetPassword" component={ResetPassword} options={{headerShown: false}}/>
+        <Stack.Screen name="ForgetOtp" component={ForgetOtp} options={{headerShown: false}}/>
+
 
         {/* Bottom tab */}
         <Stack.Screen name="Bottom" component={Bottomnavigation} options={{headerShown: false}}/>

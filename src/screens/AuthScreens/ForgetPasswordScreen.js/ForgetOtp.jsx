@@ -9,9 +9,9 @@ import Loader from '../../../lib/Loader';
 
 const { width, height } = Dimensions.get('window')
 
-const OtpScreen = ({route}) => {
+const ForgetOtp = ({route}) => {
 
-    const { number } = route.params
+    const { number, password } = route.params
 
     const nav = useNavigation()
     const [otp1, setOtp1] = useState('')
@@ -32,15 +32,14 @@ const OtpScreen = ({route}) => {
 
     const onSubmit = async () => {
         try {
-            console.log(`${otp1}${otp2}${otp3}${otp4}${otp5}${otp6}`)
-            const url = `${URL}auth/verify-otp/`
+            const url = `${URL}auth/verify-forget-otp/`
             setIsLoad(true)
             const repos = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ number, OTP: `${otp1}${otp2}${otp3}${otp4}${otp5}${otp6}` })
+                body: JSON.stringify({ number, OTP: `${otp1}${otp2}${otp3}${otp4}${otp5}${otp6}`, password })
             })
             const data = await repos.json()
             if (data.success) {
@@ -49,7 +48,7 @@ const OtpScreen = ({route}) => {
                 )
                 Toast.show({
                     type: 'success',
-                    text1: "Login to activate your account",
+                    text1: "Reset password successfully",
                 })
             } else {
                 Toast.show({
@@ -170,7 +169,7 @@ const OtpScreen = ({route}) => {
     )
 }
 
-export default OtpScreen
+export default ForgetOtp
 
 const styles = StyleSheet.create({
     container: {
