@@ -1347,22 +1347,22 @@ def getAllUserRefer(request):
         return Response(SERVER_ERROR)
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def getAllUserReferWithLevel(request):
     try:
-        # token = request.data.get("token")
-        # if not token:
-        #     return Response({"success": False, "message": "insufficient data"})
+        token = request.data.get("token")
+        if not token:
+            return Response({"success": False, "message": "insufficient data"})
 
-        # number = getUserJWT(token)
-        # if not number:
-        #     return Response({
-        #         "success": False,
-        #         "message": "Invalid credentials"
-        #     })
+        number = getUserJWT(token)
+        if not number:
+            return Response({
+                "success": False,
+                "message": "Invalid credentials"
+            })
 
-        user = User.objects.filter(mobile_number=45465754).first()
+        user = User.objects.filter(mobile_number=number).first()
 
         if not user:
             return Response({"success": False, "message": "Invalid User"})
