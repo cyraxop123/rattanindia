@@ -161,7 +161,9 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+L10N=False
+
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
