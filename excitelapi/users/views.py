@@ -1006,7 +1006,8 @@ def submitWithDrawalRequest(request):
                     transactionDetails.save()
                     userDataBalance = UserSchema(
                         user,
-                        data={"depositAmount": int(user.depositAmount - int(amount))},
+                        data={"depositAmount": int(
+                            user.depositAmount - int(amount))},
                         partial=True)
                     if userDataBalance.is_valid():
                         userDataBalance.save()
@@ -1043,7 +1044,8 @@ def submitWithDrawalRequest(request):
                 transactionDetails.save()
                 userDataBalance = UserSchema(
                     user,
-                    data={"depositAmount": int(user.depositAmount - int(amount))},
+                    data={"depositAmount": int(
+                        user.depositAmount - int(amount))},
                     partial=True)
                 if userDataBalance.is_valid():
                     userDataBalance.save()
@@ -1343,4 +1345,93 @@ def getAllUserRefer(request):
 
     except Exception as e:
         return Response(SERVER_ERROR)
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+def getAllUserReferWithLevel(request):
+    try:
+        # token = request.data.get("token")
+        # if not token:
+        #     return Response({"success": False, "message": "insufficient data"})
+
+        # number = getUserJWT(token)
+        # if not number:
+        #     return Response({
+        #         "success": False,
+        #         "message": "Invalid credentials"
+        #     })
+
+        user = User.objects.filter(mobile_number=45465754).first()
+
+        if not user:
+            return Response({"success": False, "message": "Invalid User"})
+
+        if not user.is_active:
+            return Response({
+                "success": False,
+                "message": "Invalid credentials"
+            })
+
+        referID = user.referId
+
+        getAllUser = User.objects.filter(refer_by=referID).all().order_by("-id")
+
+        level1Users = []
+        level2Users = []
+        level3Users = []
+
+        finalList = []
+
+        for i in getAllUser:
+            level1Users.append({
+                "name": i.name,
+                "number": i.mobile_number,
+                "joinon": i.timestamp,
+                "level": 1,
+                "referId": i.referId
+            })
+
+        for i in level1Users:
+            level2 = User.objects.filter(refer_by=i["referId"]).all().order_by("-id")
+            for i in level2:
+                level2Users.append({
+                "name": i.name,
+                "number": i.mobile_number,
+                "joinon": i.timestamp,
+                "level": 2,
+                "referId": i.referId
+            })
+
+        for i in level2Users:
+            level3 = User.objects.filter(refer_by=i["referId"]).all().order_by("-id")
+            for i in level3:
+                level3Users.append({
+                "name": i.name,
+                "number": i.mobile_number,
+                "joinon": i.timestamp,
+                "level": 3,
+                "referId": i.referId
+            })
         
+        finalList.extend(level1Users)
+        finalList.extend(level2Users)
+        finalList.extend(level3Users)
+
+
+            
+        print(level1Users)
+        print()
+        print()
+        print(level2Users)
+        print()
+        print()
+        print(level3Users)
+
+
+
+        return Response({"users": finalList})
+
+    except Exception as e:
+        print(e)
+        return Response(SERVER_ERROR)

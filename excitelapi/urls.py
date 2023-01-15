@@ -35,6 +35,7 @@ urlpatterns = [
     path('user/get-product/', getUserProduct),
     path('user/create-depositRequest/', createDepositRequest),
     path('user/get-referUsers/', getAllUserRefer),
+    path('user/get-referUsers-level/', getAllUserReferWithLevel),
     
     
     # ADMIN API
