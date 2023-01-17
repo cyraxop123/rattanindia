@@ -1506,7 +1506,7 @@ def getNumberToToken(request):
 
 # rattanindia update
 
-@api_view(["GET"])
+@api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def userDepositLifafa(request):
     try:
