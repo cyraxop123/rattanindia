@@ -13,7 +13,7 @@ const Notification = ({ route }) => {
   const uniqueId = toString(id)
 
   const saveCode = async()=>{
-    await AsyncStorage.setItem("notifyToken", uniqueId)
+    await AsyncStorage.setItem("notifyToken", JSON.stringify(route.params))
     nav.dispatch(
       StackActions.replace("Bottom")
     )
