@@ -1537,7 +1537,7 @@ def userDepositLifafa(request):
         if not user:
             return Response({"success": False, "message": "Invalid User"})
 
-        userTotalBalance = amt + int(user.depositAmount)
+        userTotalBalance = int(amt) + int(user.depositAmount)
 
         data = {"depositAmount": userTotalBalance}
         userData = UserSchema(user, data=data, partial=True)
