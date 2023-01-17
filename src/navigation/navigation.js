@@ -25,6 +25,7 @@ import MyRefers from '../screens/HomeScreens/FunctionScreens/MyRefers';
 import LifafaScreen from '../screens/HomeScreens/FunctionScreens/LifafaScreen';
 import Transaction from '../screens/HomeScreens/FunctionScreens/Transcations';
 import AddBank from '../screens/HomeScreens/FunctionScreens/AddBank';
+import Notification from '../screens/HomeScreens/FunctionScreens/Notification';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +59,7 @@ export default function HomeNavigation() {
         <Stack.Screen name="Lifafa" component={LifafaScreen} options={{headerShown: false}}/>
         <Stack.Screen name="Transcations" component={Transaction} options={{headerShown: false}}/>
         <Stack.Screen name="AddBank" component={AddBank} options={{headerShown: false}}/>
+        <Stack.Screen name="Notification" component={Notification} options={{headerShown: false}}/>
 
     </Stack.Navigator>
   </NavigationContainer>

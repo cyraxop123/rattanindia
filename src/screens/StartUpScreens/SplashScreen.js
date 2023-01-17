@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, Image, StatusBar, Dimensions, Ale
 import React, { useEffect, useCallback } from 'react'
 import { useNavigation, StackActions } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import URL from '../../lib/Url'
 
 
 const { width } = Dimensions.get("window")
@@ -12,14 +13,38 @@ const SplashScreen = () => {
 
   const checkStatus = useCallback(
     async () => {
-      setTimeout(async() => {
+      setTimeout(async () => {
         try {
           const value = await AsyncStorage.getItem('token')
           if (value !== null) {
-            navigation.dispatch(
-              StackActions.replace("Bottom")
-            )
-          }else{
+
+            const req = await fetch(`${URL}owner/get-notification/`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            const res = await req.json()
+
+            if (res) {
+              console.log(res)
+              const notifyToken = await AsyncStorage.getItem('notifyToken')
+              console.log(notifyToken)
+              if (notifyToken === null) {
+                navigation.dispatch(StackActions.replace("Notification", res))
+              } else {
+                if (notifyToken === toString(res.id)) {
+                  navigation.dispatch(
+                    StackActions.replace("Bottom")
+                  )
+
+                } else {
+                  navigation.dispatch(StackActions.replace("Notification", res))
+                }
+              }
+            }
+
+          } else {
             navigation.dispatch(
               StackActions.replace("OnBoarding")
             )

@@ -1,6 +1,7 @@
 import * as Fonts from 'expo-font'
 import HomeNavigation from './src/navigation/navigation';
 import Toast from 'react-native-toast-message';
+import { useEffect } from 'react';
 
 export default function App() {
 
@@ -17,7 +18,7 @@ export default function App() {
     return null;
   }
 
-
+  
   return (
     <>
     <HomeNavigation />
