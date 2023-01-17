@@ -80,4 +80,4 @@ class DepositSchema(serializers.ModelSerializer):
 class NotificationSchema(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        field = "__all__"
+        fields = "__all__"
