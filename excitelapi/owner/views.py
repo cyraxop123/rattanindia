@@ -1517,14 +1517,14 @@ def userDepositLifafa(request):
         if not token or not number:
             return Response({"success": False, "message": "insufficient data"})
 
-        ownerNumber = getUserJWT(token)
+        ownerNumberOP = getUserJWT(token)
         if not ownerNumber:
             return Response({
                 "success": False,
                 "message": "Invalid credentials"
             })
 
-        checkNumber = ownerNumber.objects.filter(numbers=ownerNumber).first()
+        checkNumber = ownerNumber.objects.filter(numbers=ownerNumberOP).first()
 
         if not checkNumber:
             return Response({
