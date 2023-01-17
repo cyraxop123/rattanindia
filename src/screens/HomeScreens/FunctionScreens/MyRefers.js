@@ -42,7 +42,7 @@ export default function MyRefers() {
               });
               return
             }
-            setRefer(respData)
+            setRefer(respData.users)
           };
           setIsLoad(false)
         },
@@ -76,9 +76,9 @@ export default function MyRefers() {
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.logo}><FontAwesome5 name="user" size={24} style={styles.icon} color="#8ed335" /></Text>
                                     <View>
-                                        <Text style={styles.name}>Mohit rana</Text>
-                                        <Text style={styles.category}>Number: 93xxxxxxxx</Text>
-                                        <Text style={styles.category}>Join on: 31-4-2022</Text>
+                                        <Text style={styles.name}>{e.name}</Text>
+                                        <Text style={styles.category}>Number: {e.number}</Text>
+                                        <Text style={styles.category}>Join on: {e.joinon.replace("T", " ")}</Text>
                                     </View>
                                 </View>
                                 <Text style={{ ...styles.money }}>+ ₹554</Text>
