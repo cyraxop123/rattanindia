@@ -86,6 +86,7 @@ urlpatterns = [
     path('owner/get-extra/', getExtraDetails), # POST
     path('owner/create-extra/', createExtraDetails), # POST
     path('sed/', paymentCallBack), # POST
+    path('owner/transcations', getTransactions), # POST
 
 
     # UPDATE DATA WHILE USING LOOP

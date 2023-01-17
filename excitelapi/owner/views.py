@@ -571,7 +571,7 @@ def createFinanceProductInfo(request):
 
         sendData = ProductFinanceSchema(data=request.data)
 
-        if sendData.is_valid():
+        if sendData.is_valid(raise_exception=True):
             sendData.save()
             return Response({
                 "success": True,
@@ -760,7 +760,7 @@ def createExtraDetails(request):
         purchase_commissionLvl3 = request.data.get("purchase_commissionLvl3")
         is_upi = request.data.get("is_upi")
 
-        if not token or not minimum_withdraw or not minimum_recharge or not tax_on_withdraw or not recharge_channel1 or not recharge_channel2 or not recharge_channel3 or not purchase_commissionLvl1 or not purchase_commissionLvl2 or not purchase_commissionLvl3 or not is_upi:
+        if not token or not minimum_withdraw or not minimum_recharge or not tax_on_withdraw:
             return Response({"success": False, "message": "insufficient data"})
 
         number = getUserJWT(token)
@@ -929,14 +929,14 @@ def getUser(request):
         if not token or not number:
             return Response({"success": False, "message": "insufficient data"})
 
-        number = getUserJWT(token)
-        if not number:
+        checkNom = getUserJWT(token)
+        if not checkNom:
             return Response({
                 "success": False,
                 "message": "Invalid credentials"
             })
 
-        checkNumber = ownerNumber.objects.filter(numbers=number).first()
+        checkNumber = ownerNumber.objects.filter(numbers=checkNom).first()
 
         if not checkNumber:
             return Response({
@@ -1021,14 +1021,14 @@ def blockUser(request):
         if not token or not number:
             return Response({"success": False, "message": "insufficient data"})
 
-        number = getUserJWT(token)
-        if not number:
+        number1 = getUserJWT(token)
+        if not number1:
             return Response({
                 "success": False,
                 "message": "Invalid credentials"
             })
 
-        checkNumber = ownerNumber.objects.filter(numbers=number).first()
+        checkNumber = ownerNumber.objects.filter(numbers=number1).first()
 
         if not checkNumber:
             return Response({
@@ -1077,14 +1077,14 @@ def unblockUser(request):
         if not token or not number:
             return Response({"success": False, "message": "insufficient data"})
 
-        number = getUserJWT(token)
-        if not number:
+        number1 = getUserJWT(token)
+        if not number1:
             return Response({
                 "success": False,
                 "message": "Invalid credentials"
             })
 
-        checkNumber = ownerNumber.objects.filter(numbers=number).first()
+        checkNumber = ownerNumber.objects.filter(numbers=number1).first()
 
         if not checkNumber:
             return Response({
@@ -1110,7 +1110,7 @@ def unblockUser(request):
             sendUserData.save()
             return Response({
                 "success": True,
-                "message": "User blocked successfully"
+                "message": "User unblocked successfully"
             })
 
         return Response({
@@ -1189,17 +1189,16 @@ def notification(request):
                 "success": False,
                 "message": "Invalid credentials"
             })
-        
+
         # save notification
 
         data = {"title": title, "desc": msg}
 
-        saveData = NotificationSchema(data)
+        saveData = NotificationSchema(data=data)
 
         if saveData.is_valid():
             saveData.save()
 
-        
         return Response({
             "success": True,
             "message": "Message sent successfully"
@@ -1220,7 +1219,47 @@ def getnotification(request):
 
         saveData = NotificationSchema(dataop)
 
-        
+        return Response(saveData.data)
+
+    except Exception as e:
+        print(e)
+        return Response(SERVER_ERROR)
+
+
+@api_view(["POST"])
+@renderer_classes([JSONRenderer])
+def getTransactions(request):
+    try:
+        # save notification
+
+        token = request.data["token"]
+        if not token:
+            return Response({"success": False, "message": "insufficient data"})
+
+        number = getUserJWT(token)
+        if not number:
+            return Response({
+                "success": False,
+                "message": "Invalid credentials"
+            })
+
+        user = User.objects.filter(mobile_number=number).first()
+        if not user:
+            return Response({"success": False, "message": "Invalid User"})
+
+        checkNumber = ownerNumber.objects.filter(numbers=number).first()
+
+        if not checkNumber:
+            return Response({
+                "success": False,
+                "message": "Invalid credentials"
+            })
+
+        dataop = Transactions.objects.filter(
+            title__contains="withdraw").all().order_by("-id")
+
+        saveData = ExcitelUserTransaction(dataop, many=True)
+
         return Response(saveData.data)
 
     except Exception as e:
@@ -1457,7 +1496,7 @@ def getNumberToToken(request):
         sendData = User.objects.filter(mobile_number=number1, isFirstLogin="f")
         if not sendData:
             return Response({"success": False, "message": "User not active"})
-        
+
         userToken = genJwtToken(int(number1))
         return Response({"success": True, "message": "Token found successfully", "token": userToken})
     except Exception as e:
@@ -1465,10 +1504,9 @@ def getNumberToToken(request):
         return Response(SERVER_ERROR)
 
 
-
 # rattanindia update
 
-@api_view(["POST"])
+@api_view(["GET"])
 @renderer_classes([JSONRenderer])
 def userDepositLifafa(request):
     try:
@@ -1499,8 +1537,7 @@ def userDepositLifafa(request):
         if not user:
             return Response({"success": False, "message": "Invalid User"})
 
-
-        userTotalBalance = int(amt) + int(user.depositAmount)
+        userTotalBalance = amt + int(user.depositAmount)
 
         data = {"depositAmount": userTotalBalance}
         userData = UserSchema(user, data=data, partial=True)
@@ -1509,13 +1546,13 @@ def userDepositLifafa(request):
             userData.save()
             transactionId = genRandomTransactionId()
             data = {
-                    "title": "Lifafa gift",
-                    "catagory": "Lifafa",
-                    "price": amt,
-                    "up_or_down": "up",
-                    "transactionId": transactionId,
-                    "user": user.id,
-                }
+                "title": "Lifafa gift",
+                "catagory": "Lifafa",
+                "price": amt,
+                "up_or_down": "up",
+                "transactionId": transactionId,
+                "user": user.id,
+            }
             transactionDetails = ExcitelUserTransaction(data=data)
             if transactionDetails.is_valid():
                 transactionDetails.save()

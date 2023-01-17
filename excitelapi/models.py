@@ -38,7 +38,7 @@ class ExcitelFinanceProducts(models.Model):
     minimum_invest = models.IntegerField()
     daily_income = models.FloatField()
     price = models.FloatField()
-    total_sell = models.BigIntegerField()
+    total_sell = models.BigIntegerField(default=0)
 
 
 class BankAccount(models.Model):

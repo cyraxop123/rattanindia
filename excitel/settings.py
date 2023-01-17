@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-^b&s+k4rgkoq#x$pa!(^w*c3is@%(erk4(+zqc0l2gijgjj2p8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["localhost", "service.exciteel.com"]
 
 # SECURE_HSTS_SECONDS = 31536000
 # SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -40,9 +40,10 @@ ALLOWED_HOSTS = ["localhost"]
 
 CORS_ALLOWED_ORIGINS = [
     'https://cyraxop123-curly-pancake-57946wgj7vh4p69-8000.preview.app.github.dev',
+    'https://service.exciteel.com'
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://cyraxop123-curly-pancake-57946wgj7vh4p69-8000.preview.app.github.dev']
+CSRF_TRUSTED_ORIGINS = ['https://cyraxop123-curly-pancake-57946wgj7vh4p69-8000.preview.app.github.dev', 'https://service.exciteel.com']
 
 
 CORS_ALLOW_METHODS = [
