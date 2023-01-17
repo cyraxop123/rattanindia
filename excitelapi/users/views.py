@@ -1362,7 +1362,7 @@ def getAllUserReferWithLevel(request):
                 "message": "Invalid credentials"
             })
 
-        user = User.objects.filter(mobile_number=123).first()
+        user = User.objects.filter(mobile_number=number).first()
 
         if not user:
             return Response({"success": False, "message": "Invalid User"})
