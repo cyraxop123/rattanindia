@@ -1,6 +1,11 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../../lib/Loader'
+import URL from '../../../lib/Url'
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 
 
@@ -9,6 +14,44 @@ const { width, height } = Dimensions.get('window');
 export default function MyRefers() {
     const data = [1, 5, 6, 5, 3, 1, 3, 54, 6, 3]
     const nav = useNavigation()
+    const [isLoad, setIsLoad] = useState(false)
+    const [refer, setRefer] = useState([])
+
+    const isFocus = useIsFocused()
+
+    const getUserTrans = useCallback(
+        async () => {
+          setIsLoad(true)
+          let tokenop = await AsyncStorage.getItem('token');
+          if (tokenop !== null) {
+            const Infourl = `${URL}user/get-referUsers-level/`;
+            const UserRespo = await fetch(Infourl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ token: tokenop }),
+            });
+            const respData = await UserRespo.json();
+            console.log(respData)
+    
+            if (JSON.stringify(respData).includes("Invalid")) {
+              Toast.show({
+                type: 'error',
+                text1: 'Login to continue',
+              });
+              return
+            }
+            setRefer(respData)
+          };
+          setIsLoad(false)
+        },
+        [isFocus],
+      )
+    
+      useEffect(() => {
+        getUserTrans()
+      }, [isFocus])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -28,7 +71,7 @@ export default function MyRefers() {
                 {<View style={styles.transactionView}>
                     <Text style={styles.title}>Total refers</Text>
                     <View style={styles.cardView}>
-                        {data.map((e, index) => {
+                        {refer.map((e, index) => {
                             return <View key={index} style={styles.card}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.logo}><FontAwesome5 name="user" size={24} style={styles.icon} color="#8ed335" /></Text>
