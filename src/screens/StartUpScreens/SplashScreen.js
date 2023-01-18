@@ -29,8 +29,6 @@ const SplashScreen = () => {
             if (res) {
               console.log(res)
               const notifyToken = await AsyncStorage.getItem('notifyToken')
-              console.log(res.id)
-              console.log(JSON.parse(notifyToken).id === res.id)
               if (notifyToken === null) {
                 navigation.dispatch(StackActions.replace("Notification", res))
               } else {

@@ -102,7 +102,9 @@ const SettingScreen = () => {
           <Text style={styles.walletTitle}>Account</Text>
           <TouchableOpacity style={styles.walletCard} onPress={
             () => {
-              nav.navigate("Withdraw")
+              nav.navigate("Withdraw", {
+                balance: info.depositAmount
+              })
             }
           }>
             <View style={styles.wallentContent}>

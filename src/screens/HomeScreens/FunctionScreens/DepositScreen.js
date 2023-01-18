@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, TouchableOpacity, Dimensions, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 
 
 const { width, height } = Dimensions.get('window')
@@ -9,8 +9,6 @@ const { width, height } = Dimensions.get('window')
 
 
 export default function DepositScreen() {
-    const nav = useNavigation()
-
 
 
 
