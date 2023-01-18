@@ -81,7 +81,7 @@ export default function MyRefers() {
                                         <Text style={styles.category}>Join on: {e.joinon.replace("T", " ")}</Text>
                                     </View>
                                 </View>
-                                <Text style={{ ...styles.money }}>{e.level} LEVEL</Text>
+                                <Text style={{ ...styles.money }}>LEVEL {e.level}</Text>
                             </View>;
                         })}
                     </View>

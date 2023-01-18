@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     financeProdFlatListView: {
         marginTop: 10,
         flexGrow: 0,
-        marginLeft: 10
+        marginLeft: 20
     },
 
     financeProdCard: {
