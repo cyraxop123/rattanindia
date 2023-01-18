@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, Dimensions, Image, TouchableOpacity, Modal } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ImageBackground } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { StackActions, useIsFocused, useNavigation } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -207,32 +207,40 @@ const MyProd = () => {
                                             </View>
                                         </View>
                                     </Modal>
-                                    <LinearGradient
-                                        colors={['#7fc71a', '#16460e']}
-                                        style={styles.financeProdCard}
-                                        key={index}
-                                    >
+                                    <ImageBackground
+                                            style={styles.img}
+                                            source={require('../../../assets/images/card.jpg')}
+                                            resizeMode={'center'}
+                                            borderRadius={25}
+                                        >
+
+                                            <LinearGradient
+                                                colors={['rgba(8, 233, 162, 0.7)', 'rgba(8, 233, 162, 0.7)', 'rgba(0, 0, 0, 0.75)']}
+                                                style={styles.financeProdCard}
+                                            >
 
 
-                                        <View style={styles.financeCardView}>
-                                            <Text style={styles.financeCardTitle}>Reliant finance</Text>
-                                        </View>
-                                        <View style={styles.financeCardDetailsView}>
-                                            <View style={styles.financeCardDetailsQue}>
-                                                <Text style={styles.financeCardDetailsTitle}>Duration <Entypo name="back-in-time" size={width * 0.038} color="black" /></Text>
-                                                <Text style={styles.financeCardDetailsTitle}>₹ Min. Invest</Text>
-                                            </View>
-                                            <View style={styles.financeCardDetailsAns}>
-                                                <Text style={styles.financeCardDetailsAns1}>{e.expire_on}</Text>
-                                                <Text style={styles.financeCardDetailsAns1}>₹ {e.user_invest}</Text>
-                                            </View>
-                                            <View style={styles.buttonView}>
-                                                <TouchableOpacity style={styles.button} onPress={() => setModalVisiable(!modalVisiable)}>
-                                                    <Text style={styles.buttonText}>Sell now</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    </LinearGradient></>
+                                                <View style={styles.financeCardView}>
+                                                    <Text style={styles.financeCardTitle}>Reliant finance</Text>
+                                                </View>
+                                                <View style={styles.financeCardDetailsView}>
+                                                    <View style={styles.financeCardDetailsQue}>
+                                                        <Text style={styles.financeCardDetailsTitle}>Duration <Entypo name="back-in-time" size={width * 0.038} color="black" /></Text>
+                                                        <Text style={styles.financeCardDetailsTitle}>₹ Min. Invest</Text>
+                                                    </View>
+                                                    <View style={styles.financeCardDetailsAns}>
+                                                        <Text style={styles.financeCardDetailsAns1}>{item.validity} Days</Text>
+                                                        <Text style={styles.financeCardDetailsAns1}>₹ {item.minimum_invest}</Text>
+                                                    </View>
+                                                    <View style={styles.buttonView}>
+                                                        <TouchableOpacity style={styles.button} onPress={() => setModalVisiable(!modalVisiable)}>
+                                                            <Text style={styles.buttonText}>Invest Now</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </View>
+                                            </LinearGradient>
+
+                                        </ImageBackground></>
                                 </View>
                             )
                         }) : <Image source={require("../../../assets/videos/empty-cart.gif")} />
@@ -250,6 +258,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#00300b',
     },
+
+    img: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: width * 0.82,
+    },
+
 
     header: {
         marginTop: 20,
@@ -297,7 +312,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         paddingBottom: 10,
         marginLeft: 15,
-        borderColor: '#98dc31',
+        borderColor: 'rgba(4, 225, 44, 1)',
         borderWidth: 3.5
     },
 
@@ -318,11 +333,11 @@ const styles = StyleSheet.create({
 
     prodButton: {
         fontFamily: 'Poppins-Bold',
-        backgroundColor: '#98dc31',
+        backgroundColor: 'rgba(4, 225, 44, 1)',
         width: width * 0.4,
         textAlign: 'center',
         paddingVertical: 5,
-        color: 'white',
+        color: 'black',
         marginBottom: 10
     },
 

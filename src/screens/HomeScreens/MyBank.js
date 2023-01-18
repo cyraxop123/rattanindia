@@ -111,13 +111,16 @@ const MyBank = () => {
                         return (
                             <TouchableOpacity key={index} style={styles.bankView} onPress={() => handleOnBankUpdate(e.accountNumber)}>
                                 <View style={styles.bankLogo}>
-                                    <MaterialCommunityIcons name="bank-outline" size={width * 0.16} color="green" />
+                                    <MaterialCommunityIcons name="bank-outline" size={width * 0.15} color="#a6d699" />
                                 </View>
                                 <View style={styles.bankContent}>
                                     <Text style={styles.bankHolderName}>{e.holderName}</Text>
                                     <Text style={styles.bankName}>{e.bankAccountName}</Text>
-                                    <Text style={styles.bankName}>{e.accountNumber}</Text>
-                                    <Text style={{ ...styles.bankPrimary, color: `${e.primaryBank ? "skyblue" : "grey"}` }}>Primary</Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                        <Text style={styles.bankName}>{e.accountNumber}</Text>
+                                        <Text style={{ ...styles.bankPrimary, color: `${e.primaryBank ? "red" : "black"}` }}>Primary</Text>
+
+                                    </View>
                                 </View>
                             </TouchableOpacity>
                         )
@@ -165,29 +168,41 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginLeft: 20,
-        marginTop: 20
+        backgroundColor: 'white',
+        marginHorizontal: 20,
+        marginTop: 30,
+        borderRadius: 25,
     },
 
     bankLogo: {
-        marginRight: 5
+        marginRight: 5,
+        backgroundColor: '#00300b',
+        marginLeft: 10,
+        padding: 8,
+        borderRadius: 25
+    },
+    bankContent: {
+        justifyContent: 'center',
+        paddingVertical: 10,
+        marginLeft: 5
     },
     bankHolderName: {
-        color: 'white',
+        color: 'black',
         fontFamily: 'Poppins-Medium',
-        fontSize: width * 0.04
+        fontSize: width * 0.035
     },
 
     bankName: {
-        color: '#689694',
+        color: 'grey',
         fontFamily: 'Poppins-Medium',
         fontSize: width * 0.03
     },
 
     bankPrimary: {
-        color: '#48d0ff',
+        color: 'grey',
         fontFamily: 'Poppins-Bold',
-        fontSize: width * 0.025
+        fontSize: width * 0.025,
+        marginLeft: 30
     },
 
     buttonView: {
@@ -199,7 +214,8 @@ const styles = StyleSheet.create({
     },
 
     buttonContent: {
-        marginLeft: 10
+        marginLeft: 10,
+        alignItems: 'center'
     },
 
     buttonTitle: {
