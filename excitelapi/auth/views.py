@@ -17,7 +17,7 @@ SERVER_ERROR = {"success": False, "message": "Server Error"}
 @renderer_classes([JSONRenderer])
 def login(request):
     try:
-        encData = request.data
+        encData = request.data.get("data")
         data = getAuthDetails(encData)
         if not data:
             return Response({"success": False, "message": "Invalid token"})
@@ -116,7 +116,7 @@ def login(request):
 @renderer_classes([JSONRenderer])
 def signup(request):
     try:
-        encData = request.data
+        encData = request.data.get("data")
         data = getAuthDetails(encData)
         if not data:
             return Response({"success": False, "message": "Invalid token"})
