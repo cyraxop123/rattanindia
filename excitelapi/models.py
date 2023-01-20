@@ -123,7 +123,7 @@ class DepositMoney(models.Model):
     time = models.DateTimeField(default= datetime.datetime.now())
     status = models.CharField(max_length=10)
     timestamp = models.DateTimeField(default=now)
-    channel = models.CharField(blank=True)
+    channel = models.CharField(blank=True, max_length=10)
 
 
 class ContactUs(models.Model):
