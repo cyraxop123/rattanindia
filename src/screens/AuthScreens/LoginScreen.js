@@ -39,15 +39,17 @@ const LoginScreen = () => {
                 return 0
             }
             const url = `${URL}auth/login/`
-            const textEnc = JWT.encode({ number, password }, 'mohit@rana09', { algorithm: 'HS256' })
+            const textEnc = JWT.encode({ number, password }, 'LfWH4BsxmHT4T77b8rfmtwAmbYQhnsYUeLaKSxg', { algorithm: 'HS256' })
+            console.log(textEnc)
             const req = await fetch(url, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ number, password, data: textEnc })
+                body: JSON.stringify({ data: textEnc })
             })
             const res = await req.json()
+            console.log(res)
 
             if (JSON.stringify(res).includes("token")) {
                 await AsyncStorage.setItem("token", res.token)

@@ -8,17 +8,17 @@ import JWT from 'expo-jwt';
 
 const { width, height } = Dimensions.get('window')
 
-const CreatePasswordScreen = ({route}) => {
+const CreatePasswordScreen = ({ route }) => {
 
     const nav = useNavigation()
-    const {name, number, referId} = route.params
+    const { name, number, referId } = route.params
     const [password, setPassword] = useState('')
     const [confirmPass, setConfirmPass] = useState('')
     const [isLoad, setIsLoad] = useState(false)
     const [isPass, setIsPass] = useState(false)
     const [isConf, setIsConf] = useState(false)
 
-    const handleOnSubmit = async()=>{
+    const handleOnSubmit = async () => {
         setIsLoad(true)
         try {
             if (!isPass) {
@@ -39,19 +39,17 @@ const CreatePasswordScreen = ({route}) => {
             }
             const url = `${URL}auth/signup/`
             let textEnc = ""
-            if (referId){
-                textEnc = JWT.encode({ number, password , name, referId}, 'mohit@rana09', { algorithm: 'HS256' })
-            }else{
-                textEnc = JWT.encode({ name, number, password }, 'mohit@rana09', { algorithm: 'HS256' })
-            }
+            textEnc = JWT.encode({ number, password, name, referId: referId }, 'LfWH4BsxmHT4T77b8rfmtwAmbYQhnsYUeLaKSxg', { algorithm: 'HS256' })
+
             const req = await fetch(url, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ name, number, password, referId, data: textEnc })
+                body: JSON.stringify({ data: textEnc })
             })
             const res = await req.json()
+            console.log(res)
 
             if (JSON.stringify(res).includes("true")) {
                 Toast.show({
@@ -108,9 +106,9 @@ const CreatePasswordScreen = ({route}) => {
                         placeholderTextColor={'black'}
                         keyboardType={'default'}
                         secureTextEntry={true}
-                        onChangeText={(e)=> setPassword(e)}
+                        onChangeText={(e) => setPassword(e)}
                         value={password}
-                        />
+                    />
                     <TextInput
                         style={styles.loginInput}
                         cursorColor={'black'}
@@ -118,7 +116,7 @@ const CreatePasswordScreen = ({route}) => {
                         placeholderTextColor={'black'}
                         keyboardType={'default'}
                         secureTextEntry={true}
-                        onChangeText={(e)=> setConfirmPass(e)}
+                        onChangeText={(e) => setConfirmPass(e)}
                         value={confirmPass}
                     />
 
