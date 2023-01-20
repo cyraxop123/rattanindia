@@ -81,3 +81,8 @@ class NotificationSchema(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = "__all__"
+
+class TotalMoneySchema(serializers.ModelSerializer):
+    class Meta:
+        model = TotalPay
+        fields = "__all__"

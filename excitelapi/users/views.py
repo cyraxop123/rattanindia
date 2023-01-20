@@ -1255,7 +1255,8 @@ def createDepositRequest(request):
     try:
         token = request.data.get("token")
         amt = request.data.get("amt")
-        if not token or not amt:
+        channel = request.data.get("channel")
+        if not token or not amt or not channel:
             return Response({"success": False, "message": "insufficient data"})
 
         number = getUserJWT(token)
@@ -1280,7 +1281,8 @@ def createDepositRequest(request):
             "status": "Pending",
             "amount": amt,
             "trid": transactionIdop,
-            "User": user.id
+            "User": user.id,
+            "channel": channel
         }
 
         depositeMoneyData = DepositSchema(data=data, partial=True)

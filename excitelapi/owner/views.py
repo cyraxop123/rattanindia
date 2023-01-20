@@ -15,7 +15,8 @@ from excitelapi.models import (
     extraDetails,
     ownerNumber,
     withdrawalRequest,
-    Notification
+    Notification,
+    TotalPay
 )
 from excitelapi.serializers import (
     DepositSchema,
@@ -28,7 +29,8 @@ from excitelapi.serializers import (
     ProductFinanceSchema,
     ProductSchema,
     UserSchema,
-    NotificationSchema
+    NotificationSchema,
+    TotalMoneySchema
 )
 from excitelapi.utils.JWT_utlis import getUserJWT
 
@@ -237,12 +239,17 @@ def updateUserWithdrawalRequest(request):
                                                         partial=True)
             if sendBankLogs.is_valid():
                 sendBankLogs.save()
-                return Response({
-                    "success":
-                    True,
-                    "message":
-                    "Bank withdrawal request updated successfully",
-                })
+                getOldBalance = TotalPay.objects.first().amount
+                dataForPay = TotalMoneySchema(
+                    getOldBalance, data={"amount": getOldBalance + bankLogs.money}, partial=True)
+                if dataForPay.is_valid():
+                    dataForPay.save()
+                    return Response({
+                        "success":
+                        True,
+                        "message":
+                        "Bank withdrawal request updated successfully",
+                    })
 
         data = {"status": status, "rejection_reason": reason}
         sendBankLogs = ExcitelUserWithdrawalRequest(bankLogs,
@@ -1220,6 +1227,22 @@ def getnotification(request):
         saveData = NotificationSchema(dataop)
 
         return Response(saveData.data)
+
+    except Exception as e:
+        print(e)
+        return Response(SERVER_ERROR)
+
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+def getTotalPay(request):
+    try:
+        # save notification
+
+        dataop = TotalPay.objects.first()
+
+        return Response({"amount": dataop})
 
     except Exception as e:
         print(e)

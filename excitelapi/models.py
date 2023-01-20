@@ -123,6 +123,7 @@ class DepositMoney(models.Model):
     time = models.DateTimeField(default= datetime.datetime.now())
     status = models.CharField(max_length=10)
     timestamp = models.DateTimeField(default=now)
+    channel = models.CharField(blank=True)
 
 
 class ContactUs(models.Model):
@@ -135,3 +136,6 @@ class Notification(models.Model):
     title = models.CharField(max_length=25)
     desc = models.CharField(max_length=100)
     timestamp = models.DateTimeField(default=now)
+
+class TotalPay(models.Model):
+    amount = models.BigIntegerField(default=0)

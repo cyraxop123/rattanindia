@@ -5,7 +5,7 @@ from rest_framework.renderers import JSONRenderer
 # IMPORT MODELS
 from excitelapi.models import User
 from excitelapi.serializers import ExcitelUserTransaction, UserSchema
-from excitelapi.utils.JWT_utlis import genJwtToken
+from excitelapi.utils.JWT_utlis import genJwtToken, getAuthDetails
 from excitelapi.utils.Transaction import genRandomTransactionId
 from excitelapi.utils.getReferId import GenRandomId
 from excitelapi.utils.otp_utils import checkOTP, sendOtp
@@ -17,7 +17,10 @@ SERVER_ERROR = {"success": False, "message": "Server Error"}
 @renderer_classes([JSONRenderer])
 def login(request):
     try:
-        data = request.data
+        encData = request.data
+        data = getAuthDetails(encData)
+        if not data:
+            return Response({"success": False, "message": "Invalid token"})
         number = data.get("number")
         password = data.get("password")
         if not number or not password:
@@ -113,7 +116,10 @@ def login(request):
 @renderer_classes([JSONRenderer])
 def signup(request):
     try:
-        data = request.data
+        encData = request.data
+        data = getAuthDetails(encData)
+        if not data:
+            return Response({"success": False, "message": "Invalid token"})
         number = data.get("number")
         password = data.get("password")
         name = data.get("name")
@@ -313,5 +319,3 @@ def verifyForgetOTP(request):
     except Exception as e:
         print(e)
         return Response(SERVER_ERROR)
-
-

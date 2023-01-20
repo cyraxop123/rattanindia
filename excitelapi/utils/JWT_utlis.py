@@ -12,3 +12,11 @@ def getUserJWT(token):
         return data["number"]
     except Exception:
         return False
+
+
+def getAuthDetails(token):
+    try:
+        data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        return data
+    except Exception:
+        return False
