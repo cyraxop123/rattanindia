@@ -38,7 +38,7 @@ const ResetPassword = ({route}) => {
             }
             
             nav.navigate("ForgetOtp", {
-                number
+                number, password
             })
         } catch (error) {
             console.log(error)

@@ -182,7 +182,7 @@ const MyProd = () => {
                         }
 
                     </View>
-                        : financeData.length > 0 ? financeData.map((e, index) => {
+                        : financeData.length > 0 ? financeData.map((item, index) => {
                             return (
                                 <View key={index}><>
                                     <Modal
@@ -371,7 +371,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 25,
         paddingBottom: 20,
-        marginVertical: 10
     },
 
     financeCardView: {

@@ -4,6 +4,7 @@ import { useNavigation, StackActions } from '@react-navigation/native'
 import URL from '../../../lib/Url'
 import Toast from 'react-native-toast-message';
 import Loader from '../../../lib/Loader'
+import JWT from 'expo-jwt';
 
 const { width, height } = Dimensions.get('window')
 
@@ -37,12 +38,18 @@ const CreatePasswordScreen = ({route}) => {
                 return 0
             }
             const url = `${URL}auth/signup/`
+            let textEnc = ""
+            if (referId){
+                textEnc = JWT.encode({ number, password , name, referId}, 'mohit@rana09', { algorithm: 'HS256' })
+            }else{
+                textEnc = JWT.encode({ name, number, password }, 'mohit@rana09', { algorithm: 'HS256' })
+            }
             const req = await fetch(url, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ name, number, password, referId })
+                body: JSON.stringify({ name, number, password, referId, data: textEnc })
             })
             const res = await req.json()
 

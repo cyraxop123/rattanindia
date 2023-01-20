@@ -32,6 +32,7 @@ const ForgetOtp = ({route}) => {
 
     const onSubmit = async () => {
         try {
+            console.log( `${otp1}${otp2}${otp3}${otp4}${otp5}${otp6}`, number, password)
             const url = `${URL}auth/verify-forget-otp/`
             setIsLoad(true)
             const repos = await fetch(url, {

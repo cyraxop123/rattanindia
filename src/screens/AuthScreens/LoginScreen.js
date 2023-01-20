@@ -6,6 +6,7 @@ import URL from '../../lib/Url'
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Loader from '../../lib/Loader'
+import JWT from 'expo-jwt'
 
 const { width, height } = Dimensions.get('window')
 
@@ -17,7 +18,7 @@ const LoginScreen = () => {
     const [isNum, setIsNum] = useState(false)
     const [isPass, setIsPass] = useState(false)
 
-
+    
     const handleOnLogin = async () => {
         setIsLoad(true)
         try {
@@ -38,12 +39,13 @@ const LoginScreen = () => {
                 return 0
             }
             const url = `${URL}auth/login/`
+            const textEnc = JWT.encode({ number, password }, 'mohit@rana09', { algorithm: 'HS256' })
             const req = await fetch(url, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ number, password })
+                body: JSON.stringify({ number, password, data: textEnc })
             })
             const res = await req.json()
 
