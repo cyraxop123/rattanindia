@@ -266,7 +266,7 @@ def BindBankDetails(request):
 
 
 @api_view(["POST"])
-# @renderer_classes([JSONRenderer])
+@renderer_classes([JSONRenderer])
 def buyExcitelPRoduct(request):
     try:
         data = request.data
@@ -305,12 +305,20 @@ def buyExcitelPRoduct(request):
             })
 
         userBalance = userData.balance
+        withdrawalBalance = userData.depositAmount
 
         if int(productPrice) > int(userBalance):
-            return Response({
-                "success": False,
-                "message": "Insufficient funds"
-            })
+            if int(productPrice) > int(withdrawalBalance):
+                return Response({
+                    "success": False,
+                    "message": "Insufficient funds"
+                })
+
+        if int(productPrice) <= int(userBalance):
+            userBalance = int(userBalance - int(productPrice))
+
+        elif int(productPrice) <= int(withdrawalBalance):
+            withdrawalBalance = int(withdrawalBalance - int(productPrice))
 
         expireTime = getExpireTime(int(products.validity))
         data = {
@@ -329,7 +337,8 @@ def buyExcitelPRoduct(request):
             userSaveBalance = UserSchema(
                 userData1,
                 data={
-                    "balance": int(int(userData1.balance - int(productPrice)))
+                    "balance": userBalance,
+                    "depositAmount": withdrawalBalance
                 },
                 partial=True,
             )
@@ -357,7 +366,7 @@ def buyExcitelPRoduct(request):
                     transactionDetails.save()
 
                     getUserDetails = User.objects.filter(
-                        mobile_number=number).first()
+                        mobile_number=123).first()
 
                     if not getUserDetails.refer_by:
                         return Response({
@@ -567,12 +576,20 @@ def buyExcitelFinanceProduct(request):
             })
 
         userBalance = userData.balance
+        withdrawalBalance = userData.depositAmount
 
         if int(amt) > int(userBalance):
-            return Response({
-                "success": False,
-                "message": "Insufficient funds"
-            })
+            if int(amt) > int(withdrawalBalance):
+                return Response({
+                    "success": False,
+                    "message": "Insufficient funds"
+                })
+
+        if int(amt) <= int(userBalance):
+            userBalance = int(userBalance - int(amt))
+
+        elif int(amt) <= int(withdrawalBalance):
+            withdrawalBalance = int(withdrawalBalance - int(amt))
 
         expireOn = getExpireTime(products.validity)
 
@@ -591,7 +608,10 @@ def buyExcitelFinanceProduct(request):
             userData1 = User.objects.filter(mobile_number=number).first()
             userSaveBalance = UserSchema(
                 userData1,
-                data={"balance": int(int(userData1.balance - int(amt)))},
+                data={
+                    "balance": userBalance,
+                    "depositAmount": withdrawalBalance
+                },
                 partial=True,
             )
             if userSaveBalance.is_valid():
@@ -1377,7 +1397,8 @@ def getAllUserReferWithLevel(request):
 
         referID = user.referId
 
-        getAllUser = User.objects.filter(refer_by=referID).all().order_by("-id")
+        getAllUser = User.objects.filter(
+            refer_by=referID).all().order_by("-id")
 
         level1Users = []
         level2Users = []
@@ -1395,33 +1416,33 @@ def getAllUserReferWithLevel(request):
             })
 
         for i in level1Users:
-            level2 = User.objects.filter(refer_by=i["referId"]).all().order_by("-id")
+            level2 = User.objects.filter(
+                refer_by=i["referId"]).all().order_by("-id")
             for i in level2:
                 level2Users.append({
-                "name": i.name,
-                "number": i.mobile_number,
-                "joinon": i.timestamp,
-                "level": 2,
-                "referId": i.referId
-            })
+                    "name": i.name,
+                    "number": i.mobile_number,
+                    "joinon": i.timestamp,
+                    "level": 2,
+                    "referId": i.referId
+                })
 
         for i in level2Users:
-            level3 = User.objects.filter(refer_by=i["referId"]).all().order_by("-id")
+            level3 = User.objects.filter(
+                refer_by=i["referId"]).all().order_by("-id")
             for i in level3:
                 level3Users.append({
-                "name": i.name,
-                "number": i.mobile_number,
-                "joinon": i.timestamp,
-                "level": 3,
-                "referId": i.referId
-            })
-        
+                    "name": i.name,
+                    "number": i.mobile_number,
+                    "joinon": i.timestamp,
+                    "level": 3,
+                    "referId": i.referId
+                })
+
         finalList.extend(level1Users)
         finalList.extend(level2Users)
         finalList.extend(level3Users)
 
-
-            
         print(level1Users)
         print()
         print()
@@ -1429,8 +1450,6 @@ def getAllUserReferWithLevel(request):
         print()
         print()
         print(level3Users)
-
-
 
         return Response({"users": finalList})
 
