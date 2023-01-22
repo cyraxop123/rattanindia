@@ -62,7 +62,7 @@ export default function DepositScreen() {
             let tokenop = await AsyncStorage.getItem('token');
             if (tokenop !== null) {
 
-                let url = `https://payment.rattanindiaapower.in/channel${id}.php?amt=${amount}&t=${tokenop}`;
+                let url = `https://payment.rattanindiaapower.in/channel${id}.php?amt=${amount}&t=${tokenop}&channel=channel${1}`;
                 let linkValid = Linking.canOpenURL(url);
                 if (linkValid) {
                     Linking.openURL(url);

@@ -241,14 +241,31 @@ const HomeScreen = () => {
                                     <View key={item.unique_id}>
                                         <View style={styles.prodCard}>
                                             <Image style={styles.prodImage} source={{ uri: item.image_url }} />
-                                            <View style={styles.prodButtonView}>
-                                                <TouchableOpacity onPress={() => {
-                                                    handleOnSubmitProduct(item.unique_id)
-                                                }}>
+                                            <View style={{justifyContent: 'center'}}>
+                                                <Text style={{fontSize: width * 0.045, fontFamily: 'Poppins-Bold', marginBottom: 3}}>{item.length > 14 ? item.title.slice(0, 14) + "..." : item.title}</Text>
 
-                                                    <Text style={styles.prodButton}>Buy now</Text>
-                                                </TouchableOpacity>
-                                                <Text style={styles.prodRuppe}>₹ {item.price}</Text>
+
+                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Validity: </Text>
+
+                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.validity} DAYS</Text>
+                                                </View>
+
+
+                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2}}>
+                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Profit: </Text>
+                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.hourly_income}rs / DAY</Text>
+                                                </View>
+
+
+                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginLeft: 10}}>
+                                                    <Text style={{color: 'black', fontSize: width * 0.04, fontFamily: 'Poppins-Bold'}}>₹ {item.price}</Text>
+                                                    <TouchableOpacity onPress={()=> handleOnSubmitProduct(item.unique_id)}>
+                                                        <Text style={{color: 'white', fontSize: width * 0.033, fontFamily: 'Poppins-Bold', marginLeft: 40, backgroundColor: '#2da44e', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10}}>BUY NOW</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+
+
                                             </View>
                                         </View>
                                     </View>
@@ -371,21 +388,38 @@ const HomeScreen = () => {
 
                         </TouchableOpacity>
                     </View>
-                    <View style={{ ...styles.prodFlatListView, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ ...styles.prodFlatListView, justifyContent: 'center', alignItems: 'center' }}>
                         {
                             recProducts.map((item, index) => {
                                 return (
                                     <View key={index}>
-                                        <View style={{ ...styles.prodCard, marginVertical: 15 }}>
+                                           <View style={{...styles.prodCard, marginTop: 20, marginLeft: 10}}>
                                             <Image style={styles.prodImage} source={{ uri: item.image_url }} />
-                                            <View style={styles.prodButtonView}>
-                                                <TouchableOpacity onPress={() => {
-                                                    handleOnSubmitProduct(item.unique_id)
-                                                }}>
-                                                    <Text style={styles.prodButton}>Buy now</Text>
+                                            <View style={{justifyContent: 'center'}}>
+                                                <Text style={{fontSize: width * 0.045, fontFamily: 'Poppins-Bold', marginBottom: 3}}>{item.length > 14 ? item.title.slice(0, 14) + "..." : item.title}</Text>
 
-                                                </TouchableOpacity>
-                                                <Text style={styles.prodRuppe}>₹ {item.price}</Text>
+
+                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Validity: </Text>
+
+                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.validity} DAYS</Text>
+                                                </View>
+
+
+                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2}}>
+                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Profit: </Text>
+                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.hourly_income}rs / DAY</Text>
+                                                </View>
+
+
+                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginLeft: 10}}>
+                                                    <Text style={{color: 'black', fontSize: width * 0.04, fontFamily: 'Poppins-Bold'}}>₹ {item.price}</Text>
+                                                    <TouchableOpacity onPress={()=> handleOnSubmitProduct(item.unique_id)}>
+                                                        <Text style={{color: 'white', fontSize: width * 0.033, fontFamily: 'Poppins-Bold', marginLeft: 40, backgroundColor: '#2da44e', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10}}>BUY NOW</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+
+
                                             </View>
                                         </View>
                                     </View>
@@ -458,23 +492,26 @@ const styles = StyleSheet.create({
 
     prodCard: {
         backgroundColor: 'white',
-        width: width * 0.4,
         marginHorizontal: 10,
         alignItems: 'center',
         borderRadius: 25,
-        paddingBottom: 10,
         marginLeft: 15,
         borderColor: 'rgba(4, 225, 44, 1)',
-        borderWidth: 3.5
+        borderWidth: 3.5,
+        paddingVertical: 15,
+        flexDirection: 'row',
+        // width: width - 80,
+        paddingRight: 20,
+        marginBottom: 10
     },
 
     prodImage: {
         resizeMode: 'center',
-        width: '100%',
-        height: height * 0.19,
-        borderTopLeftRadius: 25,
-        borderTopRightRadius: 25,
+        width: 120,
+        height: 120,
         backgroundColor: 'black',
+        borderRadius: 15,
+        marginHorizontal: 15
     },
 
     prodButtonView: {
