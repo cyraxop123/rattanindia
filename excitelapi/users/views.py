@@ -366,7 +366,7 @@ def buyExcitelPRoduct(request):
                     transactionDetails.save()
 
                     getUserDetails = User.objects.filter(
-                        mobile_number=123).first()
+                        mobile_number=number).first()
 
                     if not getUserDetails.refer_by:
                         return Response({
