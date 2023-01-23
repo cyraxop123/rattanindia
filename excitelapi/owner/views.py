@@ -1241,7 +1241,7 @@ def getTotalPay(request):
     try:
         # save notification
 
-        dataop = TotalPay.objects.first()
+        dataop = TotalPay.objects.first().amount
 
         return Response({"amount": dataop})
 
