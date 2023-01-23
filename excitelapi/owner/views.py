@@ -240,8 +240,9 @@ def updateUserWithdrawalRequest(request):
             if sendBankLogs.is_valid():
                 sendBankLogs.save()
                 getOldBalance = TotalPay.objects.first().amount
+                haha = TotalPay.objects.first()
                 dataForPay = TotalMoneySchema(
-                    getOldBalance, data={"amount": getOldBalance + bankLogs.money}, partial=True)
+                    haha, data={"amount": getOldBalance + bankLogs.money}, partial=True)
                 if dataForPay.is_valid():
                     dataForPay.save()
                     return Response({
