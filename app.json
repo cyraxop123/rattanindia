@@ -4,7 +4,7 @@
     "slug": "rattanindia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.jpef",
+    "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "backgroundColor": "#002f09"
@@ -20,8 +20,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.jpeg",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#002f09"
       },
       "package": "com.rattanindia"
     },
