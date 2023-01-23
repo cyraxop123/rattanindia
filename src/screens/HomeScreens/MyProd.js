@@ -118,6 +118,7 @@ const MyProd = () => {
                 if (JSON.stringify(prData).includes("false")) {
                     setTopProducts([])
                 }
+                console.log(prData)
                 setTopProducts(prData)
             } else {
                 Toast.show({
@@ -153,18 +154,18 @@ const MyProd = () => {
                 </View>
                 <View style={styles.chooseView}>
                     <TouchableOpacity onPress={() => setChoose("fin")}>
-                        <Text style={styles.chooseText}>My finances</Text>
+                        <Text style={{...styles.chooseText, color: `${choose === "fin" ? "red" : 'white'}`}}>My finances</Text>
 
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setChoose("prod")}>
 
-                        <Text style={styles.chooseText}>My products</Text>
+                        <Text style={{...styles.chooseText, color: `${choose === "prod" ? "red" : 'white'}`}}>My products</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     {choose === "prod" ? <View style={{ ...styles.prodFlatListView, justifyContent: 'center', alignItems: 'center' }}>
                         {
-                            topProducts.length > 0 ? topProducts.map((e, index) => {
+                            topProducts.length > 0 ? topProducts.map((item, index) => {
                                 return (
                                     <View key={index}>
                                         <View style={styles.prodCard}>
@@ -183,14 +184,6 @@ const MyProd = () => {
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
                                                     <Text style={{ color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20 }}>Profit: </Text>
                                                     <Text style={{ color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold' }}>{item.hourly_income}rs / DAY</Text>
-                                                </View>
-
-
-                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginLeft: 10 }}>
-                                                    <Text style={{ color: 'black', fontSize: width * 0.04, fontFamily: 'Poppins-Bold' }}>₹ {item.price}</Text>
-                                                    <TouchableOpacity onPress={() => handleOnSubmitProduct(item.unique_id)}>
-                                                        <Text style={{ color: 'white', fontSize: width * 0.033, fontFamily: 'Poppins-Bold', marginLeft: 40, backgroundColor: '#2da44e', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10 }}>BUY NOW</Text>
-                                                    </TouchableOpacity>
                                                 </View>
 
 
@@ -222,7 +215,7 @@ const MyProd = () => {
                                                     <TouchableOpacity style={{ ...styles.buttonModal, backgroundColor: 'darkred' }} onPress={() => setModalVisiable(!modalVisiable)}>
                                                         <Text style={styles.buttonTextCancel}>CANCEL</Text>
                                                     </TouchableOpacity>
-                                                    <TouchableOpacity style={{ ...styles.buttonModal }} onPress={() => buyProduct(e.unique_id)}>
+                                                    <TouchableOpacity style={{ ...styles.buttonModal }} onPress={() => buyProduct(item.unique_id)}>
                                                         <Text style={styles.buttonTextModal}>WITHDRAW</Text>
                                                     </TouchableOpacity>
                                                 </View>
@@ -247,16 +240,16 @@ const MyProd = () => {
                                             </View>
                                             <View style={styles.financeCardDetailsView}>
                                                 <View style={styles.financeCardDetailsQue}>
-                                                    <Text style={styles.financeCardDetailsTitle}>Duration <Entypo name="back-in-time" size={width * 0.038} color="black" /></Text>
-                                                    <Text style={styles.financeCardDetailsTitle}>₹ Min. Invest</Text>
+                                                    <Text style={styles.financeCardDetailsTitle}>Expire on <Entypo name="back-in-time" size={width * 0.038} color="black" /></Text>
+                                                    <Text style={styles.financeCardDetailsTitle}>₹ You Invest</Text>
                                                 </View>
                                                 <View style={styles.financeCardDetailsAns}>
-                                                    <Text style={styles.financeCardDetailsAns1}>{item.validity} Days</Text>
-                                                    <Text style={styles.financeCardDetailsAns1}>₹ {item.minimum_invest}</Text>
+                                                    <Text style={styles.financeCardDetailsAns1}>{item.expire_on}</Text>
+                                                    <Text style={styles.financeCardDetailsAns1}>₹ {item.user_invest}</Text>
                                                 </View>
                                                 <View style={styles.buttonView}>
                                                     <TouchableOpacity style={styles.button} onPress={() => setModalVisiable(!modalVisiable)}>
-                                                        <Text style={styles.buttonText}>Invest Now</Text>
+                                                        <Text style={styles.buttonText}>Withdraw</Text>
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>
@@ -336,7 +329,7 @@ const styles = StyleSheet.create({
         borderWidth: 3.5,
         paddingVertical: 15,
         flexDirection: 'row',
-        // width: width - 80,
+        width: width - 80,
         paddingRight: 20,
         marginBottom: 10
     },
@@ -347,7 +340,7 @@ const styles = StyleSheet.create({
         height: 120,
         backgroundColor: 'black',
         borderRadius: 15,
-        marginHorizontal: 15
+        marginHorizontal: 25
     },
 
     prodButtonView: {

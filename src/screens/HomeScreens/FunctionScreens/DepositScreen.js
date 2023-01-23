@@ -131,7 +131,7 @@ export default function DepositScreen() {
                                     <Text style={{ color: 'black', fontFamily: 'Poppins-Medium', fontSize: width * 0.04 }}>CHANNEL 1</Text>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={{ color: '#634f4f', fontFamily: 'Poppins-Regular', marginTop: 10 }}>Status: </Text>
-                                        <Text style={{ color: `${channel1 ? "blue" : "grey"}`, fontFamily: 'Poppins-Bold', marginTop: 10 }}>Active</Text>
+                                        <Text style={{ color: `${channel1 ? "green" : "red"}`, fontFamily: 'Poppins-Bold', marginTop: 10 }}>Live {`${channel1 ? "🟢" : "🔴"}`}</Text>
                                     </View>
                                 </View>
                                 <AntDesign name="doubleright" size={18} color="black" />
@@ -146,7 +146,7 @@ export default function DepositScreen() {
                                     <Text style={{ color: 'black', fontFamily: 'Poppins-Medium', fontSize: width * 0.04 }}>CHANNEL 2</Text>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={{ color: '#634f4f', fontFamily: 'Poppins-Regular', marginTop: 10 }}>Status: </Text>
-                                        <Text style={{ color: `${channel2 ? "blue" : "grey"}`, fontFamily: 'Poppins-Bold', marginTop: 10 }}>Active</Text>
+                                        <Text style={{ color: `${channel2 ? "green" : "red"}`, fontFamily: 'Poppins-Bold', marginTop: 10 }}>Live {`${channel2 ? "🟢" : "🔴"}`}</Text>
                                     </View>
                                 </View>
                                 <AntDesign name="doubleright" size={18} color="black" />
@@ -161,7 +161,7 @@ export default function DepositScreen() {
                                     <Text style={{ color: 'black', fontFamily: 'Poppins-Medium', fontSize: width * 0.04 }}>CHANNEL 3</Text>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={{ color: '#634f4f', fontFamily: 'Poppins-Regular', marginTop: 10 }}>Status: </Text>
-                                        <Text style={{ color: `${channel3 ? "blue" : "grey"}`, fontFamily: 'Poppins-Bold', marginTop: 10 }}>Active</Text>
+                                        <Text style={{ color: `${channel3 ? "green" : "red"}`, fontFamily: 'Poppins-Bold', marginTop: 10 }}>Live {`${channel3 ? "🟢" : "🔴"}`}</Text>
                                     </View>
                                 </View>
                                 <AntDesign name="doubleright" size={18} color="black" />
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     modalView: {
-        backgroundColor: "black",
+        backgroundColor: "#004f09",
         borderRadius: 10,
         width: width * 0.8,
         height: height * 0.6,
