@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, FlatList, Dimensions, Image, TouchableOpacity, Modal, TextInput, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, FlatList, Dimensions, Image, TouchableOpacity, Modal, TextInput, ImageBackground, Linking } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -27,6 +27,16 @@ const HomeScreen = () => {
     const [financeData, setfinanceData] = useState([])
     const [topProducts, setTopProducts] = useState([])
     const [recProducts, setRecProducts] = useState([])
+
+    const [isNotification, setIsNotification] = useState(false)
+    const [notificationData, setNotificationData] = useState({
+        "title": "",
+        "desc": "",
+        url: "",
+        buttonCancle: "cancel",
+        buttonSuccess: "ok",
+        id: '0'
+    })
 
     const getUserInfo = useCallback(
         async () => {
@@ -198,6 +208,46 @@ const HomeScreen = () => {
         setisLoad(false);
     };
 
+    const getNotification = async () => {
+        const req = await fetch(`${URL}owner/get-notification/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const res = await req.json()
+        console.log(res)
+
+        if (res.title) {
+            const getNotifyToken = await AsyncStorage.getItem("notify")
+            if (getNotifyToken !== res.timestamp) {
+                setIsNotification(true)
+                setNotificationData({
+                    title: res.title,
+                    desc: res.desc,
+                    buttonSuccess: res.buttonSuccess,
+                    buttonCancle: res.buttonCancle,
+                    url: res.url,
+                    id: res.id
+                })
+            }
+        }
+    }
+
+    const handlePressSuccess = useCallback(async (url, id) => {
+        console.log(url)
+        const supported = await Linking.canOpenURL(url);
+
+        if (supported) {
+            await Linking.openURL(url);
+            await AsyncStorage.setItem("notify", id)
+            setIsNotification(false)
+        } else {
+            setIsNotification(false)
+            await AsyncStorage.setItem("notify", id)
+        }
+    }, []);
+
 
 
     useEffect(() => {
@@ -205,6 +255,7 @@ const HomeScreen = () => {
         getFinanceProducts()
         getProducts()
         getRecProducts()
+        getNotification()
     }, [isFocus])
 
     return (
@@ -213,6 +264,44 @@ const HomeScreen = () => {
             {isLoad && <Loader />}
 
             {!isLoad && <ScrollView style={styles.container}>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isNotification}
+                    onRequestClose={() => {
+                        setIsNotification(!isNotification);
+                    }}
+                >
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
+
+                        <View style={styles.modalView1}>
+
+                            <Image style={{ width: '80%', height: 170, marginTop: 20 }} source={require("../../../assets/videos/notify.gif")} />
+
+                            <Text style={{ fontSize: width * 0.045, fontFamily: "Poppins-Bold", textAlign: 'center', color: 'white', marginHorizontal: 20, letterSpacing: 0.5 }}>{notificationData.title}</Text>
+
+                            <Text style={{ fontSize: width * 0.03, fontFamily: "Poppins-Bold", textAlign: 'center', color: '#c5c0ff', marginHorizontal: 20, letterSpacing: 1, marginTop: 5 }}>{notificationData.desc}</Text>
+
+                            <View style={{ flexDirection: 'row', marginTop: 50, marginBottom: 20, justifyContent: 'space-between' }}>
+
+                                <TouchableOpacity onPress={() => {
+                                    handlePressSuccess("usnjsa", notificationData.id)
+                                }}>
+                                    <Text style={{ backgroundColor: 'white', fontFamily: 'Poppins-Bold', marginHorizontal: 10, width: 150, textAlign: 'center', paddingVertical: 12, borderRadius: 10, color: 'red' }}>CANCEL</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {
+                                    handlePressSuccess(notificationData.url, notificationData.id)
+                                }}>
+                                    <Text style={{ backgroundColor: 'white', fontFamily: 'Poppins-Bold', marginHorizontal: 10, width: 150, textAlign: 'center', paddingVertical: 12, borderRadius: 10 }}>SUCCESS</Text>
+                                </TouchableOpacity>
+
+                            </View>
+
+
+                        </View>
+                    </View>
+                </Modal>
 
 
                 <View style={styles.profileHeadView}>
@@ -241,27 +330,27 @@ const HomeScreen = () => {
                                     <View key={item.unique_id}>
                                         <View style={styles.prodCard}>
                                             <Image style={styles.prodImage} source={{ uri: item.image_url }} />
-                                            <View style={{justifyContent: 'center'}}>
-                                                <Text style={{fontSize: width * 0.045, fontFamily: 'Poppins-Bold', marginBottom: 3}}>{item.length > 14 ? item.title.slice(0, 14) + "..." : item.title}</Text>
+                                            <View style={{ justifyContent: 'center' }}>
+                                                <Text style={{ fontSize: width * 0.045, fontFamily: 'Poppins-Bold', marginBottom: 3 }}>{item.length > 14 ? item.title.slice(0, 14) + "..." : item.title}</Text>
 
 
-                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Validity: </Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <Text style={{ color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20 }}>Validity: </Text>
 
-                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.validity} DAYS</Text>
+                                                    <Text style={{ color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold' }}>{item.validity} DAYS</Text>
                                                 </View>
 
 
-                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2}}>
-                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Profit: </Text>
-                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.hourly_income}rs / DAY</Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+                                                    <Text style={{ color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20 }}>Profit: </Text>
+                                                    <Text style={{ color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold' }}>{item.hourly_income}rs / DAY</Text>
                                                 </View>
 
 
-                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginLeft: 10}}>
-                                                    <Text style={{color: 'black', fontSize: width * 0.04, fontFamily: 'Poppins-Bold'}}>₹ {item.price}</Text>
-                                                    <TouchableOpacity onPress={()=> handleOnSubmitProduct(item.unique_id)}>
-                                                        <Text style={{color: 'white', fontSize: width * 0.033, fontFamily: 'Poppins-Bold', marginLeft: 40, backgroundColor: '#2da44e', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10}}>BUY NOW</Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginLeft: 10 }}>
+                                                    <Text style={{ color: 'black', fontSize: width * 0.04, fontFamily: 'Poppins-Bold' }}>₹ {item.price}</Text>
+                                                    <TouchableOpacity onPress={() => handleOnSubmitProduct(item.unique_id)}>
+                                                        <Text style={{ color: 'white', fontSize: width * 0.033, fontFamily: 'Poppins-Bold', marginLeft: 40, backgroundColor: '#2da44e', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10 }}>BUY NOW</Text>
                                                     </TouchableOpacity>
                                                 </View>
 
@@ -393,29 +482,29 @@ const HomeScreen = () => {
                             recProducts.map((item, index) => {
                                 return (
                                     <View key={index}>
-                                           <View style={{...styles.prodCard, marginTop: 20, marginLeft: 10}}>
+                                        <View style={{ ...styles.prodCard, marginTop: 20, marginLeft: 10 }}>
                                             <Image style={styles.prodImage} source={{ uri: item.image_url }} />
-                                            <View style={{justifyContent: 'center'}}>
-                                                <Text style={{fontSize: width * 0.045, fontFamily: 'Poppins-Bold', marginBottom: 3}}>{item.length > 14 ? item.title.slice(0, 14) + "..." : item.title}</Text>
+                                            <View style={{ justifyContent: 'center' }}>
+                                                <Text style={{ fontSize: width * 0.045, fontFamily: 'Poppins-Bold', marginBottom: 3 }}>{item.length > 14 ? item.title.slice(0, 14) + "..." : item.title}</Text>
 
 
-                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Validity: </Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <Text style={{ color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20 }}>Validity: </Text>
 
-                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.validity} DAYS</Text>
+                                                    <Text style={{ color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold' }}>{item.validity} DAYS</Text>
                                                 </View>
 
 
-                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2}}>
-                                                    <Text style={{color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20}}>Profit: </Text>
-                                                    <Text style={{color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold'}}>{item.hourly_income}rs / DAY</Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+                                                    <Text style={{ color: 'grey', fontSize: width * 0.03, fontFamily: 'Poppins-Medium', marginRight: 20 }}>Profit: </Text>
+                                                    <Text style={{ color: 'black', fontSize: width * 0.033, fontFamily: 'Poppins-Bold' }}>{item.hourly_income}rs / DAY</Text>
                                                 </View>
 
 
-                                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginLeft: 10}}>
-                                                    <Text style={{color: 'black', fontSize: width * 0.04, fontFamily: 'Poppins-Bold'}}>₹ {item.price}</Text>
-                                                    <TouchableOpacity onPress={()=> handleOnSubmitProduct(item.unique_id)}>
-                                                        <Text style={{color: 'white', fontSize: width * 0.033, fontFamily: 'Poppins-Bold', marginLeft: 40, backgroundColor: '#2da44e', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10}}>BUY NOW</Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginLeft: 10 }}>
+                                                    <Text style={{ color: 'black', fontSize: width * 0.04, fontFamily: 'Poppins-Bold' }}>₹ {item.price}</Text>
+                                                    <TouchableOpacity onPress={() => handleOnSubmitProduct(item.unique_id)}>
+                                                        <Text style={{ color: 'white', fontSize: width * 0.033, fontFamily: 'Poppins-Bold', marginLeft: 40, backgroundColor: '#2da44e', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10 }}>BUY NOW</Text>
                                                     </TouchableOpacity>
                                                 </View>
 
@@ -496,8 +585,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 25,
         marginLeft: 15,
-        borderColor: 'rgba(4, 225, 44, 1)',
-        borderWidth: 3.5,
+        borderColor: '#baeb6b',
+        borderWidth: 3,
         paddingVertical: 15,
         flexDirection: 'row',
         // width: width - 80,
@@ -698,7 +787,24 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Medium',
         marginRight: 8,
         fontSize: width * 0.033,
-    }
+    },
+
+    modalView1: {
+        backgroundColor: "#6051ff",
+        borderRadius: 20,
+        width: width * 0.9,
+        // height: height * 0.5,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        paddingVertical: 10
+    },
 
 
 })

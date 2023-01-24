@@ -18,34 +18,9 @@ const SplashScreen = () => {
           const value = await AsyncStorage.getItem('token')
           if (value !== null) {
 
-            const req = await fetch(`${URL}owner/get-notification/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            const res = await req.json()
-
-            if (res) {
-              if (res.title) {
-                const notifyToken = await AsyncStorage.getItem('notifyToken')
-                if (notifyToken === null) {
-                  navigation.dispatch(StackActions.replace("Notification", res))
-                } else {
-                  if (JSON.parse(notifyToken).id === res.id) {
-                    console.log(11)
-                    navigation.dispatch(
-                      StackActions.replace("Bottom")
-                    )
-
-                  } else {
-                    navigation.dispatch(StackActions.replace("Notification", res))
-                  }
-                }
-              } else {
-                navigation.dispatch(StackActions.replace("Bottom"))
-              }
-            }
+            navigation.dispatch(
+              StackActions.replace("Bottom")
+            )
 
           } else {
             navigation.dispatch(

@@ -325,13 +325,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 25,
         marginLeft: 15,
-        borderColor: 'rgba(4, 225, 44, 1)',
-        borderWidth: 3.5,
+        borderColor: '#baeb6b',
+        borderWidth: 3,
         paddingVertical: 15,
         flexDirection: 'row',
         width: width - 80,
         paddingRight: 20,
-        marginBottom: 10
+        marginBottom: 20
     },
 
     prodImage: {
