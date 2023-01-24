@@ -235,13 +235,17 @@ const HomeScreen = () => {
     }
 
     const handlePressSuccess = useCallback(async (url, id) => {
-        console.log(url)
-        const supported = await Linking.canOpenURL(url);
+        if (url) {
+            const supported = await Linking.canOpenURL(url);
 
-        if (supported) {
-            await Linking.openURL(url);
-            await AsyncStorage.setItem("notify", id)
-            setIsNotification(false)
+            if (supported) {
+                await Linking.openURL(url);
+                await AsyncStorage.setItem("notify", id)
+                setIsNotification(false)
+            } else {
+                setIsNotification(false)
+                await AsyncStorage.setItem("notify", id)
+            }
         } else {
             setIsNotification(false)
             await AsyncStorage.setItem("notify", id)
