@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "light",
+    "jsEngine": "hermes",
     "splash": {
       "backgroundColor": "#002f09"
     },

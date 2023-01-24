@@ -35,7 +35,8 @@ const HomeScreen = () => {
         url: "",
         buttonCancle: "cancel",
         buttonSuccess: "ok",
-        id: '0'
+        id: '0',
+        timestamp: ''
     })
 
     const getUserInfo = useCallback(
@@ -228,7 +229,8 @@ const HomeScreen = () => {
                     buttonSuccess: res.buttonSuccess,
                     buttonCancle: res.buttonCancle,
                     url: res.url,
-                    id: res.id
+                    id: res.id,
+                    timestamp: res.timestamp
                 })
             }
         }
@@ -290,14 +292,14 @@ const HomeScreen = () => {
                             <View style={{ flexDirection: 'row', marginTop: 50, marginBottom: 20, justifyContent: 'space-between' }}>
 
                                 <TouchableOpacity onPress={() => {
-                                    handlePressSuccess("usnjsa", notificationData.id)
+                                    handlePressSuccess("usnjsa", notificationData.timestamp)
                                 }}>
-                                    <Text style={{ backgroundColor: 'white', fontFamily: 'Poppins-Bold', marginHorizontal: 10, width: 150, textAlign: 'center', paddingVertical: 12, borderRadius: 10, color: 'red' }}>CANCEL</Text>
+                                    <Text style={{ backgroundColor: 'white', fontFamily: 'Poppins-Bold', marginHorizontal: 10, width: 150, textAlign: 'center', paddingVertical: 12, borderRadius: 10, color: 'red' }}>{notificationData.buttonCancle}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => {
-                                    handlePressSuccess(notificationData.url, notificationData.id)
+                                    handlePressSuccess(notificationData.url, notificationData.timestamp)
                                 }}>
-                                    <Text style={{ backgroundColor: 'white', fontFamily: 'Poppins-Bold', marginHorizontal: 10, width: 150, textAlign: 'center', paddingVertical: 12, borderRadius: 10 }}>SUCCESS</Text>
+                                    <Text style={{ backgroundColor: 'white', fontFamily: 'Poppins-Bold', marginHorizontal: 10, width: 150, textAlign: 'center', paddingVertical: 12, borderRadius: 10 }}>{notificationData.buttonSuccess}</Text>
                                 </TouchableOpacity>
 
                             </View>

@@ -112,7 +112,7 @@ export default function AddBank() {
                                 style={{ ...styles.inputArea }}
                                 placeholder="Account Number"
                                 placeholderTextColor={'grey'}
-                                keyboardType="default"
+                                keyboardType="number-pad"
                                 returnKeyType="next"
                                 value={`${accountNumber}`}
                                 onChangeText={(e) => setAccountNumber(e)}
