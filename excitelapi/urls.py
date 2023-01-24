@@ -90,6 +90,7 @@ urlpatterns = [
     path('owner/total-pay', getTotalPay), # POST
 
 
+
     # UPDATE DATA WHILE USING LOOP
     path('update-data/', updateUsersTodayData),
     path('reset-data/', resetTodayEarning),
