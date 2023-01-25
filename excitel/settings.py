@@ -41,10 +41,10 @@ ALLOWED_HOSTS = ["localhost", "service.exciteel.com"]
 CORS_ALLOWED_ORIGINS = [
     'https://cyraxop123-curly-pancake-57946wgj7vh4p69-8000.preview.app.github.dev',
     'https://service.exciteel.com',
-    'https://pallavirana7-crispy-train-g96jv45jx4qcw66p-8000.preview.app.github.dev'
+    "https://pallavirana7-scaling-rotary-phone-x6x7g597vp73pggw-8000.preview.app.github.dev"
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://cyraxop123-curly-pancake-57946wgj7vh4p69-8000.preview.app.github.dev', 'https://service.exciteel.com', 'https://pallavirana7-crispy-train-g96jv45jx4qcw66p-8000.preview.app.github.dev']
+CSRF_TRUSTED_ORIGINS = ['https://cyraxop123-curly-pancake-57946wgj7vh4p69-8000.preview.app.github.dev', 'https://service.exciteel.com', 'https://pallavirana7-scaling-rotary-phone-x6x7g597vp73pggw-8000.preview.app.github.dev']
 
 
 CORS_ALLOW_METHODS = [

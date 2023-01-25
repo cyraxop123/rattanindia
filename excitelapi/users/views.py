@@ -990,7 +990,7 @@ def submitWithDrawalRequest(request):
                 "message": "Insufficient funds"
             })
 
-        getBankDetails = BankAccount.objects.filter(User=user.id).first()
+        getBankDetails = BankAccount.objects.filter(User=user.id, primaryBank=True).first()
 
         if not getBankDetails:
             return Response({
