@@ -1176,6 +1176,10 @@ def notification(request):
         token = request.data["token"]
         title = request.data["title"]
         msg = request.data["desc"]
+        url = request.data["url"]
+        buttonSuccess = request.data["buttonSuccess"]
+        buttonCancel = request.data["buttonCancel"]
+
         if not token:
             return Response({"success": False, "message": "insufficient data"})
 
@@ -1200,7 +1204,8 @@ def notification(request):
 
         # save notification
 
-        data = {"title": title, "desc": msg}
+        data = {"title": title, "desc": msg, "url": url,
+                "buttonSuccess": buttonSuccess, "buttonCancel": buttonCancel}
 
         saveData = NotificationSchema(data=data)
 
@@ -1232,7 +1237,6 @@ def getnotification(request):
     except Exception as e:
         print(e)
         return Response(SERVER_ERROR)
-
 
 
 @api_view(["GET"])
@@ -1584,6 +1588,87 @@ def userDepositLifafa(request):
                     "success": True,
                     "message": "LIFAFA ACTIVATED SUCCESSFULLY"
                 })
+
+    except Exception as e:
+        print(e)
+        return Response(SERVER_ERROR)
+
+
+@api_view(["POST"])
+@renderer_classes([JSONRenderer])
+def getAllUserReferWithLevelOwner(request):
+    try:
+        token = request.data.get("token")
+        number = request.data.get("number")
+        if not token or not number:
+            return Response({"success": False, "message": "insufficient data"})
+
+        ownerNumberOP = getUserJWT(token)
+        if not ownerNumber:
+            return Response({
+                "success": False,
+                "message": "Invalid credentials"
+            })
+
+        checkNumber = ownerNumber.objects.filter(numbers=ownerNumberOP).first()
+
+        if not checkNumber:
+            return Response({
+                "success": False,
+                "message": "Invalid credentials"
+            })
+
+        user = User.objects.filter(mobile_number=number).first()
+
+        referID = user.referId
+
+        getAllUser = User.objects.filter(
+            refer_by=referID).all().order_by("-id")
+
+        level1Users = []
+        level2Users = []
+        level3Users = []
+
+        finalList = []
+
+        for i in getAllUser:
+            level1Users.append({
+                "name": i.name,
+                "number": i.mobile_number,
+                "joinon": i.timestamp,
+                "level": 1,
+                "referId": i.referId
+            })
+
+        for i in level1Users:
+            level2 = User.objects.filter(
+                refer_by=i["referId"]).all().order_by("-id")
+            for i in level2:
+                level2Users.append({
+                    "name": i.name,
+                    "number": i.mobile_number,
+                    "joinon": i.timestamp,
+                    "level": 2,
+                    "referId": i.referId
+                })
+
+        for i in level2Users:
+            level3 = User.objects.filter(
+                refer_by=i["referId"]).all().order_by("-id")
+            for i in level3:
+                level3Users.append({
+                    "name": i.name,
+                    "number": i.mobile_number,
+                    "joinon": i.timestamp,
+                    "level": 3,
+                    "referId": i.referId
+                })
+
+        finalList.extend(level1Users)
+        finalList.extend(level2Users)
+        finalList.extend(level3Users)
+
+        return Response({"users": finalList})
 
     except Exception as e:
         print(e)

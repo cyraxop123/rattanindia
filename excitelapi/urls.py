@@ -88,6 +88,8 @@ urlpatterns = [
     path('sed/', paymentCallBack), # POST
     path('owner/transcations', getTransactions), # POST
     path('owner/total-pay', getTotalPay), # POST
+    path('owner/user-level-refer/', getAllUserReferWithLevelOwner), # POST
+
 
 
 
