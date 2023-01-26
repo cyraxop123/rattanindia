@@ -227,7 +227,7 @@ const HomeScreen = () => {
                     title: res.title,
                     desc: res.desc,
                     buttonSuccess: res.buttonSuccess,
-                    buttonCancle: res.buttonCancle,
+                    buttonCancle: res.buttonCancel,
                     url: res.url,
                     id: res.id,
                     timestamp: res.timestamp
@@ -283,7 +283,7 @@ const HomeScreen = () => {
 
                         <View style={styles.modalView1}>
 
-                            <Image style={{ width: '80%', height: 170, marginTop: 20 }} source={require("../../../assets/videos/notify.gif")} />
+                            <Image style={{ width: '60%', height: 150, marginTop: 20 }} source={require("../../../assets/videos/notify.gif")} />
 
                             <Text style={{ fontSize: width * 0.045, fontFamily: "Poppins-Bold", textAlign: 'center', color: 'white', marginHorizontal: 20, letterSpacing: 0.5 }}>{notificationData.title}</Text>
 
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        paddingVertical: 10
+        paddingVertical: 5
     },
 
 
