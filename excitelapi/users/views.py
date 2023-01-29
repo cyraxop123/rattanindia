@@ -355,7 +355,7 @@ def buyExcitelPRoduct(request):
                 transactionId = genRandomTransactionId()
                 data = {
                     "title": products.title,
-                    "catagory": "Excitel Product",
+                    "catagory": "RattanIndia Product",
                     "price": products.price,
                     "up_or_down": "down",
                     "transactionId": transactionId,

@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 
 # IMPORT MODELS
-from excitelapi.models import User
+from excitelapi.models import User, extraDetails
 from excitelapi.serializers import ExcitelUserTransaction, UserSchema
 from excitelapi.utils.JWT_utlis import genJwtToken, getAuthDetails
 from excitelapi.utils.Transaction import genRandomTransactionId
@@ -67,7 +67,8 @@ def login(request):
                     })
             getUserReferId = User.objects.filter(
                 referId=userData.refer_by).first()
-            getReferAmount = 5
+
+            getReferAmount =  extraDetails.objects.first().bonus
             transactionId = genRandomTransactionId()
             data = {
                 "title": "Refer joining bonus",
