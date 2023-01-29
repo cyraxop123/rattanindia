@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
@@ -71,7 +71,7 @@ export default function MyRefers() {
                 {<View style={styles.transactionView}>
                     <Text style={styles.title}>Total refers</Text>
                     <View style={styles.cardView}>
-                        {refer.map((e, index) => {
+                        {refer.length !== 0 ? refer.map((e, index) => {
                             return <View key={index} style={styles.card}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.logo}><FontAwesome5 name="user" size={24} style={styles.icon} color="#8ed335" /></Text>
@@ -83,7 +83,10 @@ export default function MyRefers() {
                                 </View>
                                 <Text style={{ ...styles.money }}>LEVEL {e.level}</Text>
                             </View>;
-                        })}
+                        }):
+                        <Image style={{ width: width - 20, height: 300 }} source={require("../../../../assets/videos/cart.gif")} />
+
+                        }
                     </View>
                 </View>}
             </ScrollView>

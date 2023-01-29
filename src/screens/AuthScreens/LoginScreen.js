@@ -33,7 +33,7 @@ const LoginScreen = () => {
             if (!isPass) {
                 Toast.show({
                     type: 'error',
-                    text1: "Password length should be greater than 8",
+                    text1: "Password length should be greater than 6",
                 })
                 setIsLoad(false)
                 return 0
@@ -79,7 +79,7 @@ const LoginScreen = () => {
             setIsNum(false)
 
         }
-        if (password.length >= 8) {
+        if (password.length >= 6) {
             setIsPass(true)
         } else {
             setIsPass(false)

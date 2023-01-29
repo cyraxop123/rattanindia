@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView, Dimensions, Image } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView, Dimensions, Image, Linking } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -183,16 +183,15 @@ const SettingScreen = () => {
         {/* Contact us */}
 
         <View style={{ ...styles.walletView, marginTop: 50 }}>
-          <Text style={styles.walletTitle}>Contact</Text>
-          <TouchableOpacity style={styles.walletCard}>
-            <View style={styles.wallentContent}>
-              <MaterialIcons name="support-agent" style={styles.walletIcon} size={24} color="white" />
-              <Text style={styles.walletText}>Contact us</Text>
-            </View>
-            <FontAwesome5 name="chevron-right" size={24} color="black" />
-          </TouchableOpacity>
+          <Text style={styles.walletTitle}>Updates</Text>
 
-          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }}>
+          <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }} onPress={() => {
+            let url = `https://telegram.me/${info.channel_username}`;
+            let linkValid = Linking.canOpenURL(url);
+            if (linkValid) {
+              Linking.openURL(url);
+            }
+          }}>
             <View style={styles.wallentContent}>
               <MaterialIcons name="system-update-alt" style={styles.walletIcon} size={24} color="white" />
               <Text style={styles.walletText}>Ask update</Text>
@@ -202,7 +201,7 @@ const SettingScreen = () => {
         </View>
 
         <View style={styles.buttonView}>
-          <TouchableOpacity style={styles.button} onPress={async()=>{
+          <TouchableOpacity style={styles.button} onPress={async () => {
             await AsyncStorage.clear()
             nav.dispatch(
               StackActions.replace("Login")

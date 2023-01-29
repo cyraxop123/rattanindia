@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Dimensions, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useIsFocused, useNavigation, StackActions } from '@react-navigation/native';
 import Loader from '../../../lib/Loader'
@@ -21,36 +21,36 @@ export default function Transaction() {
 
     const getUserTrans = useCallback(
         async () => {
-          setIsLoad(true)
-          let tokenop = await AsyncStorage.getItem('token');
-          if (tokenop !== null) {
-            const Infourl = `${URL}user/get-user-transaction/`;
-            const UserRespo = await fetch(Infourl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ token: tokenop }),
-            });
-            const respData = await UserRespo.json();
-            console.log(respData)
-    
-            if (JSON.stringify(respData).includes("Invalid")) {
-              Toast.show({
-                type: 'error',
-                text1: 'Login to continue',
-              });
-            }
-            setTrans(respData);
-          };
-          setIsLoad(false)
+            setIsLoad(true)
+            let tokenop = await AsyncStorage.getItem('token');
+            if (tokenop !== null) {
+                const Infourl = `${URL}user/get-user-transaction/`;
+                const UserRespo = await fetch(Infourl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: tokenop }),
+                });
+                const respData = await UserRespo.json();
+                console.log(respData)
+
+                if (JSON.stringify(respData).includes("Invalid")) {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Login to continue',
+                    });
+                }
+                setTrans(respData);
+            };
+            setIsLoad(false)
         },
         [isFocus],
-      )
-    
-      useEffect(() => {
+    )
+
+    useEffect(() => {
         getUserTrans()
-      }, [isFocus])
+    }, [isFocus])
 
 
 
@@ -69,13 +69,13 @@ export default function Transaction() {
                     <Text style={{ color: 'white', fontSize: 20, fontFamily: 'Poppins-Medium', paddingTop: 5 }}>Back</Text>
                 </TouchableOpacity>
             </View>
-                    {isLoad && <Loader />}
+            {isLoad && <Loader />}
             {!isLoad && <ScrollView>
 
                 {<View style={styles.transactionView}>
                     <Text style={styles.title}>Transaction</Text>
                     <View style={styles.cardView}>
-                        {trans.map((e, index) => {
+                        {trans.length !== 0 ? trans.map((e, index) => {
                             return <View key={index} style={styles.card}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.logo}><FontAwesome5 name="box" size={24} style={styles.icon} color="#8ed335" /></Text>
@@ -87,7 +87,10 @@ export default function Transaction() {
                                 </View>
                                 <Text style={{ ...styles.money, color: `${e.up_or_down === "down" ? "red" : "green"}` }}>₹{e.price}</Text>
                             </View>;
-                        })}
+                        }) :
+                            <Image style={{ width: width - 20, height: 300 }} source={require("../../../../assets/videos/cart.gif")} />
+
+                        }
                     </View>
                 </View>}
             </ScrollView>}

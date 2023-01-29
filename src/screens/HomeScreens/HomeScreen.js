@@ -545,6 +545,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: width * 0.82,
+        marginHorizontal: 10
     },
 
 
