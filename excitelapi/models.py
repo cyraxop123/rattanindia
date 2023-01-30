@@ -122,7 +122,7 @@ class extraDetails(models.Model):
     purchase_commissionLvl3 = models.IntegerField()
     is_upi = models.BooleanField(default=False)
     bonus = models.BigIntegerField(default=100)
-    channel_username = models.CharField(default="CYRAX_OP")
+    channel_username = models.CharField(default="CYRAX_OP", max_length=1000)
 
 
 class DepositMoney(models.Model):
