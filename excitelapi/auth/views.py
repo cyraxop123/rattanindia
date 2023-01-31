@@ -53,7 +53,8 @@ def login(request):
 
         if userData.isFirstLogin == "t":
             if not userData.refer_by:
-                activeData = {"isFirstLogin": "f"}
+                getBonus = extraDetails.objects.first().bonus
+                activeData = {"isFirstLogin": "f", "balance": getBonus}
                 saveactiveData = UserSchema(userData,
                                             data=activeData,
                                             partial=True)
@@ -68,7 +69,8 @@ def login(request):
             getUserReferId = User.objects.filter(
                 referId=userData.refer_by).first()
 
-            getReferAmount =  extraDetails.objects.first().bonus
+            getReferAmount = extraDetails.objects.first().purchase_commissionLvl1
+            getBonus = extraDetails.objects.first().bonus
             transactionId = genRandomTransactionId()
             data = {
                 "title": "Refer joining bonus",
@@ -90,7 +92,7 @@ def login(request):
                 if updateUserBalance.is_valid():
                     updateUserBalance.save()
                     token = genJwtToken(int(userData.mobile_number))
-                    activeData = {"isFirstLogin": "f"}
+                    activeData = {"isFirstLogin": "f", "balance": getBonus}
                     saveactiveData = UserSchema(userData,
                                                 data=activeData,
                                                 partial=True)

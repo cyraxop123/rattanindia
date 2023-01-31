@@ -760,13 +760,6 @@ def createExtraDetails(request):
         minimum_withdraw = request.data.get("minimum_withdraw")
         minimum_recharge = request.data.get("minimum_recharge")
         tax_on_withdraw = request.data.get("tax_on_withdraw")
-        recharge_channel1 = request.data.get("recharge_channel1")
-        recharge_channel2 = request.data.get("recharge_channel2")
-        recharge_channel3 = request.data.get("recharge_channel3")
-        purchase_commissionLvl1 = request.data.get("purchase_commissionLvl1")
-        purchase_commissionLvl2 = request.data.get("purchase_commissionLvl2")
-        purchase_commissionLvl3 = request.data.get("purchase_commissionLvl3")
-        is_upi = request.data.get("is_upi")
 
         if not token or not minimum_withdraw or not minimum_recharge or not tax_on_withdraw:
             return Response({"success": False, "message": "insufficient data"})
@@ -1390,7 +1383,7 @@ def updateUsersTodayData(request):
                 productTransactionId = genRandomTransactionId()
                 transData = {
                     "title": "Products income",
-                    "catagory": "Hourly income",
+                    "catagory": "Daily income",
                     "price": productBalance,
                     "up_or_down": "up",
                     "transactionId": productTransactionId,
@@ -1445,6 +1438,33 @@ def updateUsersTodayData(request):
                             if transactionDetails.is_valid():
                                 transactionDetails.save()
                             userFinance.delete()
+                    else:
+                        financeBalance += userFinance.price
+
+                productTransactionId = genRandomTransactionId()
+                transData = {
+                    "title": "Finance income",
+                    "catagory": "Daily income",
+                    "price": financeBalance,
+                    "up_or_down": "up",
+                    "transactionId": productTransactionId,
+                    "user": user.id,
+                }
+                userDetails = User.objects.filter(
+                    mobile_number=user.mobile_number).first()
+                saveUserProductData = UserSchema(
+                    user,
+                    data={
+                        "today_earning":
+                            userDetails.today_earning + financeBalance,
+                            "depositAmount": userDetails.depositAmount + financeBalance
+                    },
+                    partial=True)
+                if saveUserProductData.is_valid():
+                    saveUserProductData.save()
+                    saveTransData = ExcitelUserTransaction(data=transData)
+                    if saveTransData.is_valid():
+                        saveTransData.save()
 
         return Response({"success": True, "message": "Updated successfully"})
 

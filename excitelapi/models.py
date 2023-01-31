@@ -36,6 +36,7 @@ class ExcitelProducts(models.Model):
 
 class ExcitelFinanceProducts(models.Model):
     unique_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=25, default="Finance")
     validity = models.CharField(max_length=20)
     minimum_invest = models.IntegerField()
     daily_income = models.FloatField()
@@ -118,11 +119,17 @@ class extraDetails(models.Model):
     recharge_channel2 = models.BooleanField()
     recharge_channel3 = models.BooleanField()
     purchase_commissionLvl1 = models.IntegerField()
-    purchase_commissionLvl2 = models.IntegerField()
-    purchase_commissionLvl3 = models.IntegerField()
     is_upi = models.BooleanField(default=False)
     bonus = models.BigIntegerField(default=100)
     channel_username = models.CharField(default="CYRAX_OP", max_length=1000)
+
+    product_earn1 = models.IntegerField(default=10)
+    product_earn2 = models.IntegerField(default=10)
+    product_earn3 = models.IntegerField(default=10)
+
+    finance_earn1 = models.IntegerField(default=10)
+    finance_earn2 = models.IntegerField(default=10)
+    finance_earn3 = models.IntegerField(default=10)
 
 
 class DepositMoney(models.Model):

@@ -376,9 +376,9 @@ def buyExcitelPRoduct(request):
 
                     getReferProfit = extraDetails.objects.first()
 
-                    level1Profit = getReferProfit.purchase_commissionLvl1
-                    level2Profit = getReferProfit.purchase_commissionLvl2
-                    level3Profit = getReferProfit.purchase_commissionLvl3
+                    level1Profit = getReferProfit.product_earn1
+                    level2Profit = getReferProfit.product_earn2
+                    level3Profit = getReferProfit.product_earn3
 
                     findLevel1User = User.objects.filter(
                         referId=getUserDetails.refer_by).first()
@@ -388,12 +388,12 @@ def buyExcitelPRoduct(request):
                             "success": True,
                             "message": "Check Your cart"
                         })
-
+                    tax = (productPrice * level1Profit) / 100
                     saveRefer1Profit = UserSchema(
                         findLevel1User,
                         data={
                             "balance":
-                            float(findLevel1User.balance + int(level1Profit))
+                            float(tax)
                         },
                         partial=True)
 
@@ -403,7 +403,7 @@ def buyExcitelPRoduct(request):
                         data = {
                             "title": "Level 1 Refer",
                             "catagory": "Refer And Earn",
-                            "price": int(level1Profit),
+                            "price": float(tax),
                             "up_or_down": "up",
                             "transactionId": transactionId,
                             "user": findLevel1User.id,
@@ -433,12 +433,13 @@ def buyExcitelPRoduct(request):
                             "success": True,
                             "message": "Check Your cart"
                         })
-
+                
+                    tax = (productPrice * level2Profit) / 100
                     saveRefer2Profit = UserSchema(
                         findLevel2User,
                         data={
                             "balance":
-                            float(findLevel2User.balance + int(level2Profit))
+                            float(tax)
                         },
                         partial=True)
 
@@ -448,7 +449,7 @@ def buyExcitelPRoduct(request):
                         data = {
                             "title": "Level 2 Refer",
                             "catagory": "Refer And Earn",
-                            "price": int(level2Profit),
+                            "price": float(tax),
                             "up_or_down": "up",
                             "transactionId": transactionId,
                             "user": findLevel2User.id,
@@ -478,12 +479,14 @@ def buyExcitelPRoduct(request):
                             "success": True,
                             "message": "Check Your cart"
                         })
+                    
+                    tax = (productPrice * level3Profit) / 100
 
                     saveRefer3Profit = UserSchema(
                         findLevel3User,
                         data={
                             "balance":
-                            float(findLevel3User.balance + int(level3Profit))
+                            float(tax)
                         },
                         partial=True)
 
@@ -493,7 +496,7 @@ def buyExcitelPRoduct(request):
                         data = {
                             "title": "Level 3 Refer",
                             "catagory": "Refer And Earn",
-                            "price": int(level3Profit),
+                            "price": float(tax),
                             "up_or_down": "up",
                             "transactionId": transactionId,
                             "user": findLevel3User.id,
@@ -646,9 +649,9 @@ def buyExcitelFinanceProduct(request):
 
                     getReferProfit = extraDetails.objects.first()
 
-                    level1Profit = getReferProfit.purchase_commissionLvl1
-                    level2Profit = getReferProfit.purchase_commissionLvl2
-                    level3Profit = getReferProfit.purchase_commissionLvl3
+                    level1Profit = getReferProfit.finance_earn1
+                    level2Profit = getReferProfit.finance_earn2
+                    level3Profit = getReferProfit.finance_earn3
 
                     findLevel1User = User.objects.filter(
                         referId=getUserDetails.refer_by).first()
@@ -658,12 +661,13 @@ def buyExcitelFinanceProduct(request):
                             "success": True,
                             "message": "Check Your cart"
                         })
-
+                    
+                    tax = (productPrice * level1Profit) / 100
                     saveRefer1Profit = UserSchema(
                         findLevel1User,
                         data={
                             "balance":
-                            float(findLevel1User.balance + int(level1Profit))
+                            float(tax)
                         },
                         partial=True)
 
@@ -673,7 +677,7 @@ def buyExcitelFinanceProduct(request):
                         data = {
                             "title": "Level 1 Refer",
                             "catagory": "Refer And Earn",
-                            "price": int(level1Profit),
+                            "price": float(tax),
                             "up_or_down": "up",
                             "transactionId": transactionId,
                             "user": findLevel1User.id,
@@ -695,6 +699,7 @@ def buyExcitelFinanceProduct(request):
 
                     # FIND 2 LEVEL REFER
 
+
                     findLevel2User = User.objects.filter(
                         referId=findLevel1User.refer_by).first()
 
@@ -704,11 +709,12 @@ def buyExcitelFinanceProduct(request):
                             "message": "Check Your cart"
                         })
 
+                    tax = (productPrice * level2Profit) / 100
                     saveRefer2Profit = UserSchema(
                         findLevel2User,
                         data={
                             "balance":
-                            float(findLevel2User.balance + int(level2Profit))
+                            float(tax)
                         },
                         partial=True)
 
@@ -718,7 +724,7 @@ def buyExcitelFinanceProduct(request):
                         data = {
                             "title": "Level 2 Refer",
                             "catagory": "Refer And Earn",
-                            "price": int(level2Profit),
+                            "price": float(tax),
                             "up_or_down": "up",
                             "transactionId": transactionId,
                             "user": findLevel2User.id,
@@ -748,12 +754,14 @@ def buyExcitelFinanceProduct(request):
                             "success": True,
                             "message": "Check Your cart"
                         })
+                    
+                    tax = (productPrice * level3Profit) / 100
 
                     saveRefer3Profit = UserSchema(
                         findLevel3User,
                         data={
                             "balance":
-                            float(findLevel3User.balance + int(level3Profit))
+                            float(tax)
                         },
                         partial=True)
 
@@ -763,7 +771,7 @@ def buyExcitelFinanceProduct(request):
                         data = {
                             "title": "Level 3 Refer",
                             "catagory": "Refer And Earn",
-                            "price": int(level3Profit),
+                            "price": float(tax),
                             "up_or_down": "up",
                             "transactionId": transactionId,
                             "user": findLevel3User.id,
