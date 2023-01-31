@@ -111,6 +111,8 @@ def login(request):
                         saveactiveData.save()
                         if saveactiveData.is_valid():
                             saveactiveData.save()
+                            transactionId = genRandomTransactionId()
+
                             data = {
                                 "title": "joining bonus",
                                 "catagory": "Joining bonus",
