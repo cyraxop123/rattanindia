@@ -60,12 +60,23 @@ def login(request):
                                             partial=True)
                 if saveactiveData.is_valid():
                     saveactiveData.save()
-                    token = genJwtToken(int(userData.mobile_number))
-                    return Response({
-                        "success": True,
-                        "message": "login success",
-                        "token": token
-                    })
+                    data = {
+                        "title": "joining bonus",
+                        "catagory": "Joining bonus",
+                        "price": getBonus,
+                        "up_or_down": "up",
+                        "transactionId": transactionId,
+                        "user": userData.id,
+                    }
+                    transactionDetails = ExcitelUserTransaction(data=data)
+                    if transactionDetails.is_valid(raise_exception=True):
+                        transactionDetails.save()
+                        token = genJwtToken(int(userData.mobile_number))
+                        return Response({
+                            "success": True,
+                            "message": "login success",
+                            "token": token
+                        })
             getUserReferId = User.objects.filter(
                 referId=userData.refer_by).first()
 
@@ -98,11 +109,27 @@ def login(request):
                                                 partial=True)
                     if saveactiveData.is_valid():
                         saveactiveData.save()
-                        return Response({
-                            "success": True,
-                            "message": "login success",
-                            "token": token
-                        })
+                        if saveactiveData.is_valid():
+                            saveactiveData.save()
+                            data = {
+                                "title": "joining bonus",
+                                "catagory": "Joining bonus",
+                                "price": getBonus,
+                                "up_or_down": "up",
+                                "transactionId": transactionId,
+                                "user": userData.id,
+                            }
+                            transactionDetails = ExcitelUserTransaction(
+                                data=data)
+                            if transactionDetails.is_valid(raise_exception=True):
+                                transactionDetails.save()
+                                token = genJwtToken(
+                                    int(userData.mobile_number))
+                                return Response({
+                                    "success": True,
+                                    "message": "login success",
+                                    "token": token
+                                })
         token = genJwtToken(int(userData.mobile_number))
         return Response({
             "success": True,
