@@ -1,14 +1,11 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, FlatList, Dimensions, Image, TouchableOpacity, Modal, TextInput, ImageBackground } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Entypo } from '@expo/vector-icons';
 import { useNavigation, useIsFocused, StackActions } from '@react-navigation/native';
 import Loader from '../../lib/Loader';
-import URL from '../../lib/Url';
+import URL from '../../lib/Url'
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Card from '../../components/Card';
 
 
 const { width, height } = Dimensions.get('window')
@@ -288,72 +285,7 @@ const Products = () => {
                             horizontal={true}
                             renderItem={({ item }) => {
                                 return (
-                                    <View>
-                                        <Modal
-                                            animationType="slide"
-                                            transparent={true}
-                                            visible={modalVisiable}
-                                            onRequestClose={() => {
-                                                setModalVisiable(!modalVisiable);
-                                            }}
-                                        >
-                                            <View style={styles.centeredView}>
-                                                <View style={styles.modalView}>
-                                                    <Text style={styles.durationTextModal}>Min. invest should be ₹{item.minimum_invest}</Text>
-                                                    <TextInput
-                                                        style={{ ...styles.inputArea }}
-                                                        placeholder="Enter Amount"
-                                                        placeholderTextColor={'black'}
-                                                        keyboardType="numeric"
-                                                        returnKeyType="next"
-                                                        onChangeText={(e) => setInvestAmount(e)}
-                                                        value={investAmount}
-                                                    />
-                                                    <TouchableOpacity style={{ ...styles.buttonModal }} onPress={() => buyProduct(item.unique_id)}>
-                                                        <Text style={styles.buttonTextModal}>INVEST</Text>
-                                                    </TouchableOpacity>
-                                                    <TouchableOpacity onPress={() => setModalVisiable(!modalVisiable)}>
-                                                        <Text style={styles.buttonTextCancel}>CANCEL</Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </View>
-                                        </Modal>
-
-                                        <ImageBackground
-                                            style={styles.img}
-                                            source={require('../../../assets/images/card.jpg')}
-                                            resizeMode={'center'}
-                                            borderRadius={25}
-                                        >
-
-                                            <LinearGradient
-                                                colors={['rgba(8, 233, 162, 0.7)', 'rgba(8, 233, 162, 0.7)', 'rgba(0, 0, 0, 0.75)']}
-                                                style={styles.financeProdCard}
-                                            >
-
-
-                                                <View style={styles.financeCardView}>
-                                                    <Text style={styles.financeCardTitle}>Reliant finance</Text>
-                                                </View>
-                                                <View style={styles.financeCardDetailsView}>
-                                                    <View style={styles.financeCardDetailsQue}>
-                                                        <Text style={styles.financeCardDetailsTitle}>Duration <Entypo name="back-in-time" size={width * 0.038} color="black" /></Text>
-                                                        <Text style={styles.financeCardDetailsTitle}>₹ Min. Invest</Text>
-                                                    </View>
-                                                    <View style={styles.financeCardDetailsAns}>
-                                                        <Text style={styles.financeCardDetailsAns1}>{item.validity} Days</Text>
-                                                        <Text style={styles.financeCardDetailsAns1}>₹ {item.minimum_invest}</Text>
-                                                    </View>
-                                                    <View style={styles.buttonView}>
-                                                        <TouchableOpacity style={styles.button} onPress={() => setModalVisiable(!modalVisiable)}>
-                                                            <Text style={styles.buttonText}>Invest Now</Text>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                </View>
-                                            </LinearGradient>
-
-                                        </ImageBackground>
-                                    </View>
+                                    <Card item={item}/>
                                 )
                             }}
                         />

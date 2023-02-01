@@ -154,12 +154,12 @@ const MyProd = () => {
                 </View>
                 <View style={styles.chooseView}>
                     <TouchableOpacity onPress={() => setChoose("fin")}>
-                        <Text style={{...styles.chooseText, color: `${choose === "fin" ? "red" : 'white'}`}}>My finances</Text>
+                        <Text style={{...styles.chooseText, backgroundColor: `${choose === "fin" ? "red" : 'transparent'}`}}>My finances</Text>
 
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setChoose("prod")}>
 
-                        <Text style={{...styles.chooseText, color: `${choose === "prod" ? "red" : 'white'}`}}>My products</Text>
+                        <Text style={{...styles.chooseText, backgroundColor: `${choose === "prod" ? "red" : 'transparent'}`}}>My products</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -201,7 +201,7 @@ const MyProd = () => {
                             return (
                                 <View key={index}><>
                                     <Modal
-                                        animationType="slide"
+                                        animationType="fade"
                                         transparent={true}
                                         visible={modalVisiable}
                                         onRequestClose={() => {
