@@ -23,6 +23,6 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: 'contain',
-    width: '80%'
+    width: '30%'
   }
 })
