@@ -37,7 +37,8 @@ const SignUpScreen = () => {
         }
         nav.navigate("CreatePassword", {
             name,
-            number
+            number,
+            referId
         })
     }
 
