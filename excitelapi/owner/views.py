@@ -1375,8 +1375,33 @@ def updateUsersTodayData(request):
                 print("products...")
                 for pr in userProducts:
                     if not checkExpireTime(pr.expire_on):
-                        pr.delete()
-                        continue
+                        productTransactionId = genRandomTransactionId()
+                        transData = {
+                            "title": "Products Refund",
+                            "catagory": "Product Return Profit",
+                            "price": pr.price,
+                            "up_or_down": "up",
+                            "transactionId": productTransactionId,
+                            "user": user.id,
+                        }
+                        userDetails = User.objects.filter(
+                            mobile_number=user.mobile_number).first()
+                        saveUserProductData = UserSchema(
+                            user,
+                            data={
+                                "today_earning":
+                                    userDetails.today_earning + productBalance,
+                                    "depositAmount": userDetails.depositAmount + pr.price
+                            },
+                            partial=True)
+                        if saveUserProductData.is_valid():
+                            saveUserProductData.save()
+                            saveTransData = ExcitelUserTransaction(
+                                data=transData)
+                            if saveTransData.is_valid():
+                                saveTransData.save()
+                                pr.delete()
+                                continue
 
                     productBalance += pr.hourly_income
 
@@ -1438,33 +1463,6 @@ def updateUsersTodayData(request):
                             if transactionDetails.is_valid():
                                 transactionDetails.save()
                             userFinance.delete()
-                    else:
-                        financeBalance += userFinance.price
-
-                productTransactionId = genRandomTransactionId()
-                transData = {
-                    "title": "Finance income",
-                    "catagory": "Daily income",
-                    "price": financeBalance,
-                    "up_or_down": "up",
-                    "transactionId": productTransactionId,
-                    "user": user.id,
-                }
-                userDetails = User.objects.filter(
-                    mobile_number=user.mobile_number).first()
-                saveUserProductData = UserSchema(
-                    user,
-                    data={
-                        "today_earning":
-                            userDetails.today_earning + financeBalance,
-                            "depositAmount": userDetails.depositAmount + financeBalance
-                    },
-                    partial=True)
-                if saveUserProductData.is_valid():
-                    saveUserProductData.save()
-                    saveTransData = ExcitelUserTransaction(data=transData)
-                    if saveTransData.is_valid():
-                        saveTransData.save()
 
         return Response({"success": True, "message": "Updated successfully"})
 

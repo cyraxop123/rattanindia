@@ -392,7 +392,7 @@ def buyExcitelPRoduct(request):
                     saveRefer1Profit = UserSchema(
                         findLevel1User,
                         data={
-                            "balance":
+                            "depositAmount":
                             float(tax)
                         },
                         partial=True)
@@ -438,7 +438,7 @@ def buyExcitelPRoduct(request):
                     saveRefer2Profit = UserSchema(
                         findLevel2User,
                         data={
-                            "balance":
+                            "depositAmount":
                             float(tax)
                         },
                         partial=True)
@@ -485,7 +485,7 @@ def buyExcitelPRoduct(request):
                     saveRefer3Profit = UserSchema(
                         findLevel3User,
                         data={
-                            "balance":
+                            "depositAmount":
                             float(tax)
                         },
                         partial=True)
@@ -666,7 +666,7 @@ def buyExcitelFinanceProduct(request):
                     saveRefer1Profit = UserSchema(
                         findLevel1User,
                         data={
-                            "balance":
+                            "depositAmount":
                             float(tax)
                         },
                         partial=True)
@@ -713,7 +713,7 @@ def buyExcitelFinanceProduct(request):
                     saveRefer2Profit = UserSchema(
                         findLevel2User,
                         data={
-                            "balance":
+                            "depositAmount":
                             float(tax)
                         },
                         partial=True)
@@ -760,7 +760,7 @@ def buyExcitelFinanceProduct(request):
                     saveRefer3Profit = UserSchema(
                         findLevel3User,
                         data={
-                            "balance":
+                            "depositAmount":
                             float(tax)
                         },
                         partial=True)
