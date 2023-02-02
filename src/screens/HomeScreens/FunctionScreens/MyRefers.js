@@ -16,6 +16,10 @@ export default function MyRefers() {
     const nav = useNavigation()
     const [isLoad, setIsLoad] = useState(false)
     const [refer, setRefer] = useState([])
+    const [level1, setLevel1] = useState(0)
+    const [level2, setLevel2] = useState(0)
+    const [level3, setLevel3] = useState(0)
+
 
     const isFocus = useIsFocused()
 
@@ -43,6 +47,15 @@ export default function MyRefers() {
               return
             }
             setRefer(respData.users)
+            respData.users.map((e)=>{
+                if (e.level == 1){
+                    setLevel1(level1 + 1)
+                }else if(e.level == 2){
+                    setLevel2(level2 + 1)
+                }else if(e.level == 3){
+                    setLevel3(level3 + 1)
+                }
+            })
           };
           setIsLoad(false)
         },
@@ -69,7 +82,19 @@ export default function MyRefers() {
             <ScrollView>
 
                 {<View style={styles.transactionView}>
-                    <Text style={styles.title}>Total refers</Text>
+                    <Text style={styles.title}>Total refers ({refer.length})</Text>
+                    <View style={styles.chooseView}>
+                    <TouchableOpacity>
+                        <Text style={{...styles.chooseText}}>Level 1 ({level1}) </Text>
+
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Text style={{...styles.chooseText}}>Level 2 ({level2}) </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Text style={{...styles.chooseText}}>Level 3 ({level3}) </Text>
+                    </TouchableOpacity>
+                </View>
                     <View style={styles.cardView}>
                         {refer.length !== 0 ? refer.map((e, index) => {
                             return <View key={index} style={styles.card}>
@@ -159,5 +184,28 @@ const styles = StyleSheet.create({
         fontSize: 10,
         fontFamily: 'Poppins-Medium',
         color: '#111b21',
+    },
+    chooseView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: 50,
+        width: width,
+        paddingHorizontal: 10,
+        marginVertical: 30
+    },
+
+    chooseText: {
+        fontFamily: 'Poppins-Medium',
+        paddingVertical: 12,
+        paddingHorizontal: 15,
+        color: 'white',
+        borderColor: '#a6d699',
+        borderWidth: 1,
+        borderRadius: 10,
+        alignItems: 'center',
+        textAlign: 'center',
+        fontSize: width * 0.03,
+        justifyContent: 'center'
     },
 });
