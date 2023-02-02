@@ -118,7 +118,6 @@ const Card = ({item}) => {
                             <TouchableOpacity style={styles.button} onPress={() => setModalVisiable(!modalVisiable)}>
                                 <Text style={styles.buttonText}>Invest Now</Text>
                             </TouchableOpacity>
-                            <Text style={{color: 'grey', fontFamily: 'Poppins-Medium', marginTop: 10, textTransform: 'uppercase', letterSpacing: 1}}>You will get {item.price}rs/Day</Text>
                         </View>
                     </View>
                 </LinearGradient>
