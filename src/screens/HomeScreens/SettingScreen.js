@@ -22,6 +22,16 @@ const SettingScreen = () => {
 
   const [info, setInfo] = useState([])
   const [isLoad, setIsLoad] = useState(false)
+  const [data, setData] = useState([])
+
+  const getExtra = useCallback(
+    async () => {
+        const respo = await fetch(`${URL}owner/get-extra/`)
+        const dataop = await respo.json()
+        setData(dataop)
+    },
+    [isFocus],
+)
 
   const getUserInfo = useCallback(
     async () => {
@@ -56,6 +66,7 @@ const SettingScreen = () => {
 
   useEffect(() => {
     getUserInfo()
+    getExtra()
   }, [isFocus])
 
 
@@ -183,10 +194,10 @@ const SettingScreen = () => {
         {/* Contact us */}
 
         <View style={{ ...styles.walletView, marginTop: 50 }}>
-          <Text style={styles.walletTitle}>Updates</Text>
+          <Text style={styles.walletTitle}>Support</Text>
 
           <TouchableOpacity style={{ ...styles.walletCard, marginTop: 15 }} onPress={() => {
-            let url = `https://telegram.me/${info.channel_username}`;
+            let url = `https://telegram.me/${data.channel_username}`;
             let linkValid = Linking.canOpenURL(url);
             if (linkValid) {
               Linking.openURL(url);
@@ -194,7 +205,7 @@ const SettingScreen = () => {
           }}>
             <View style={styles.wallentContent}>
               <MaterialIcons name="system-update-alt" style={styles.walletIcon} size={24} color="white" />
-              <Text style={styles.walletText}>Ask update</Text>
+              <Text style={styles.walletText}>Join Group</Text>
             </View>
             <FontAwesome5 name="chevron-right" size={24} color="black" />
           </TouchableOpacity>
