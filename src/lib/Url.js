@@ -1,1 +1,1 @@
-export default "https://service.exciteel.com/"
+export default "http://service.rattanindiaapower.in:8000/"

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "882414116491",
+    "project_id": "rattan-india",
+    "storage_bucket": "rattan-india.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882414116491:android:1632b22c2aec6fe2b97e8e",
+        "android_client_info": {
+          "package_name": "com.rattanindia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "882414116491-pre1nc3jc3f5t7ckc022q6c3bb4c6632.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB57Gr3mGTa8PUBCpkmcbvo7xblIMUfjq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "882414116491-pre1nc3jc3f5t7ckc022q6c3bb4c6632.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

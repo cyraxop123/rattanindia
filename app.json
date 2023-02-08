@@ -24,7 +24,8 @@
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#002f09"
       },
-      "package": "com.rattanindia"
+      "package": "com.rattanindia",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

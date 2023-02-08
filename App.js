@@ -2,8 +2,11 @@ import * as Fonts from 'expo-font'
 import HomeNavigation from './src/navigation/navigation';
 import Toast from 'react-native-toast-message';
 import { useEffect } from 'react';
+import registerNNPushToken from 'native-notify';
 
 export default function App() {
+
+  registerNNPushToken(6209, 'ldAjMHFiBAsmfC6LEoZmWR');
 
   const [fontsLoaded] = Fonts.useFonts({
     'Poppins-Bold': require('./assets/fonts/Poppins-Bold.ttf'),
